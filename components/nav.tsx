@@ -1,6 +1,9 @@
-"use client";                                         // needed for usePathname hook
+"use client";                                         // needed for hooks
 import Link from "next/link";
 import { usePathname } from "next/navigation";         // detect active route
+import { useTheme } from "next-themes";               // read and set current theme
+import { Moon, Sun } from "lucide-react";             // toggle icons
+import { Button } from "@/components/ui/button";      // shadcn button for consistent styling
 
 // ── Nav link definitions ───────────────────────────────────
 const links = [
@@ -13,13 +16,14 @@ const links = [
 // ── Top navigation bar ────────────────────────────────────
 export function Nav() {
   const pathname = usePathname();                      // current route path for active highlighting
+  const { theme, setTheme } = useTheme();             // current theme value and setter
 
   return (
-    <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+    <nav className="border-b border-border bg-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center gap-6">
 
         {/* brand */}
-        <Link href="/" className="font-semibold text-zinc-900 dark:text-zinc-50 tracking-tight">
+        <Link href="/" className="font-semibold text-foreground tracking-tight">
           🏠 StayOps
         </Link>
 
@@ -36,8 +40,8 @@ export function Nav() {
                 href={link.href}
                 className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                   isActive
-                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium"
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    ? "bg-muted text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {link.label}
@@ -45,6 +49,20 @@ export function Nav() {
             );
           })}
         </div>
+
+        {/* spacer pushes toggle to the right */}
+        <div className="ml-auto" />
+
+        {/* light / dark toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Toggle theme"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}  /* cycle light ↔ dark */
+        >
+          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />   {/* visible in light mode */}
+          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" /> {/* visible in dark mode */}
+        </Button>
 
       </div>
     </nav>
