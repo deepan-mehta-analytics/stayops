@@ -84,7 +84,16 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 
 ## 🎯 Business Problem
 
-Independent operators running 3–20 short/mid-term rental properties manage bookings across Airbnb, Booking.com, and their own direct-booking channels. There is no unified inbox. Double-bookings happen because the Airbnb calendar and the Booking.com calendar are synced by hand. Pricing anomalies go undetected until checkout. Gap nights between consecutive stays are left empty when a simple upsell message could fill them. Operators spend Sunday evenings in spreadsheets instead of growing their portfolio.
+Independent operators running 3–20 short/mid-term rental properties have no unified inbox. Bookings arrive from Airbnb, Booking.com, and direct enquiries simultaneously — and reconciliation happens manually in a spreadsheet at the end of the week.
+
+**The daily pain:**
+
+- 📅 **Double-bookings** — Airbnb and Booking.com calendars are synced by hand; a lag of minutes is enough to sell the same night twice
+- 💸 **Pricing anomalies** — a nightly rate entered on one channel quietly diverges from the base rate on another; nobody notices until the guest checks out
+- 🌙 **Gap nights** — 1–2 unsold nights between consecutive stays sit empty when a targeted early check-in offer or upsell message could fill them
+- 📊 **No single view** — revenue, occupancy, and turnover schedules are scattered across three apps and a spreadsheet; there is no "Sunday morning dashboard"
+
+Operators spend Sunday evenings firefighting instead of growing their portfolio.
 
 > **How do you give a solo or small-team rental operator the kind of automated conflict detection and ops intelligence that only enterprise property management systems have — without the $500/month PMS subscription?**
 
