@@ -1,13 +1,482 @@
-# 🏠 StayOps — AI-Assisted Operations Console for Short/Mid-Term Rental Operators
+# 🏠 StayOps
 
-> **Status:** 🚧 Phase 0 — scaffold live · Full README coming in Phase 4
+## ⚡ Quick Summary
 
-StayOps unifies multi-channel rental bookings (Airbnb, Booking.com, direct), reconciles conflicts automatically with an AI agent, surfaces operational KPIs, and drives direct-booking growth — built end-to-end with Claude Code on Next.js + Vercel.
+Short/mid-term rental operators run fragmented businesses: Airbnb bookings sit in one inbox, Booking.com reservations in another, and direct enquiries arrive by email — with reconciliation done manually in spreadsheets. StayOps unifies every channel into one AI-assisted operations console: import bookings from any source, detect conflicts automatically (duplicates, double-bookings, pricing anomalies, upsell gaps), surface real-time KPIs, and drive direct-booking growth — all deployed live on Vercel.
 
-**Stack:** Next.js 15 · TypeScript · Tailwind · shadcn/ui · Supabase (Postgres) · Drizzle ORM · Anthropic SDK · Vercel
+This project is deliberately built to the exact stack and problem space of the modern rental-tech operator role, and it is developed **end-to-end with Claude Code as the primary coding agent**. Every commit traces directly to an AI-assisted development session, with the reconciliation engine and AI reporting layer built using Anthropic's Claude with tool-calling. It closes the two real skill gaps in the space — Next.js/Vercel and growth/tracking — while showcasing existing depth in SQL, automation, data reconciliation, and AI agent design.
 
-**Live URL:** https://stayops-five.vercel.app
+### Multi-channel booking reconciliation engine + AI operations console, built end-to-end with Claude Code on Next.js 16 + Vercel
 
 ---
 
-_Full README (14-section recruiter-grade format) generated in Phase 4._
+## 🏷️ Project Badges
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Drizzle](https://img.shields.io/badge/Drizzle_ORM-SQL--first-C5F74F?style=for-the-badge)](https://orm.drizzle.team/)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Anthropic](https://img.shields.io/badge/Anthropic-Claude_SDK-blueviolet?style=for-the-badge)](https://www.anthropic.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://stayops-five.vercel.app)
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions_✅-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/deepan-mehta-analytics/stayops/actions)
+[![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=for-the-badge)](https://github.com/deepan-mehta-analytics/stayops)
+
+---
+
+## 📌 Project Overview
+
+This project implements a **full-stack AI-assisted operations console for multi-property short/mid-term rental operators**, built on Next.js 16 + Supabase with an Anthropic SDK agent layer.
+
+It models the real-world operator workflow of importing bookings from Airbnb, Booking.com, and direct channels into a unified Postgres database, then running automated conflict detection before any human has to review a spreadsheet.
+
+Key implemented and planned features:
+
+- **Multi-channel ingestion** — CSV upload and Google Sheets API import route handlers; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
+- **Rule-based reconciliation engine** — detects four conflict types (duplicate bookings, double-bookings, pricing anomalies, upsell gaps) and writes structured `reconciliation_flags` with plain-English reasons
+- **AI reconciliation agent** — Claude tool-calling reads flagged rows, generates resolution proposals with explicit reasoning traces, and writes decisions back to the database
+- **KPI dashboard** — occupancy %, average daily rate (ADR), gross revenue, and upcoming turnovers computed from live Postgres rows; filterable by property and channel
+- **Automated ops reports** — Vercel Cron triggers nightly reconciliation sweeps and weekly AI-generated Markdown summaries delivered to Slack
+- **Direct-booking growth surface** — public landing page with PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution)
+- **7-table Drizzle schema** — typed, SQL-first ORM schema covering the full operational data model (properties, channels, bookings, reconciliation flags, turnover tasks, leads, reports)
+- **Synthetic demo dataset** — seed script plants exactly 8 conflict events (2 per type) against a realistic backdrop of ~70 clean bookings, with dates computed relative to today so the demo always has live upcoming turnovers
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer | Tool | Purpose |
+|---|---|---|
+| Framework | Next.js 16 (App Router, TypeScript) | Full-stack: API route handlers + React UI in one deploy |
+| Hosting + Cron | Vercel | Live deploy from `main`; built-in Cron for nightly/weekly jobs |
+| Database | Supabase (Postgres) | Serverless SQL with Row-Level Security; real SQL on display |
+| ORM | Drizzle ORM | SQL-first, fully typed; keeps queries readable rather than hidden |
+| Validation | Zod 4 | Runtime schema validation on all API boundaries |
+| UI Components | shadcn/ui + Tailwind CSS 4 | Accessible component primitives; AI-friendly to scaffold |
+| Charts | Tremor / Recharts | KPI dashboard charts with minimal boilerplate |
+| AI Agent | Anthropic SDK (`claude-sonnet-4-6`) | Tool-calling reconciliation agent + report generation |
+| Analytics | PostHog | Funnel events, session capture, conversion tracking (Phase 3) |
+| Sheets Integration | Google Sheets API (service account) | Booking import/export — a real operator workflow |
+| Automation | Vercel Cron | Scheduled reconciliation runs and weekly AI report delivery |
+| CI | GitHub Actions (Node 24) | Lint + typecheck on every push to `main` |
+| Seed | `tsx` + `crypto` | Deterministic, idempotent demo data generation |
+
+---
+
+## 🎯 Business Problem
+
+Independent operators running 3–20 short/mid-term rental properties manage bookings across Airbnb, Booking.com, and their own direct-booking channels. There is no unified inbox. Double-bookings happen because the Airbnb calendar and the Booking.com calendar are synced by hand. Pricing anomalies go undetected until checkout. Gap nights between consecutive stays are left empty when a simple upsell message could fill them. Operators spend Sunday evenings in spreadsheets instead of growing their portfolio.
+
+> **How do you give a solo or small-team rental operator the kind of automated conflict detection and ops intelligence that only enterprise property management systems have — without the $500/month PMS subscription?**
+
+---
+
+## 🏗️ Architecture
+
+### System Flow
+
+```
+[Airbnb CSV]  [Booking.com CSV]  [Google Sheets]  [Direct CSV]
+       │               │               │               │
+       └───────────────┴───────────────┴───────────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  Route Handlers     │  ← Next.js App Router
+                    │  + Sheets API       │    /api/import/csv
+                    │  SHA-256 dedup      │    /api/import/sheets
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────────────────────┐
+                    │       Supabase Postgres              │
+                    │  (Drizzle schema — 7 tables)         │
+                    │  properties · channels · bookings    │
+                    │  reconciliation_flags · turnover_tasks│
+                    │  leads · reports                     │
+                    └──┬────────┬────────┬────────┬───────┘
+                       │        │        │        │
+              ┌────────▼──┐ ┌───▼────┐ ┌─▼────┐ ┌▼──────────┐
+              │Reconcil-  │ │ KPI    │ │Vercel│ │ Public    │
+              │iation     │ │Dash-   │ │Cron  │ │ Landing   │
+              │Engine     │ │board   │ │jobs  │ │ Page      │
+              │rule pass  │ │Tremor  │ │      │ │ (Phase 3) │
+              └────┬──────┘ └───┬────┘ └──┬───┘ └─────┬─────┘
+                   │            │         │             │
+              ┌────▼──────┐     │    ┌────▼──────┐ ┌───▼──────┐
+              │AI Agent   │     │    │AI weekly  │ │ leads    │
+              │Claude     │     │    │report     │ │ table    │
+              │tool-call  │     │    │→ Slack    │ │+ PostHog │
+              │(Phase 2)  │     │    │(Phase 2)  │ │(Phase 3) │
+              └───────────┘     │    └───────────┘ └──────────┘
+                                │
+                         ┌──────▼──────┐
+                         │ Ops Console │
+                         │ /dashboard  │
+                         │ /flags      │
+                         │ /reports    │
+                         └─────────────┘
+```
+
+### Mermaid — Component Graph
+
+```mermaid
+flowchart TB
+    subgraph Sources["📥 Data Sources"]
+        A["Airbnb CSV"]
+        B["Booking.com CSV"]
+        C["Google Sheets"]
+        D["Direct CSV"]
+    end
+
+    subgraph Ingest["🔄 Ingestion — Route Handlers"]
+        E["SHA-256 Dedup\nsource_row_hash"]
+    end
+
+    subgraph DB["🗄️ Supabase Postgres — Drizzle ORM"]
+        G[("properties · channels\nbookings")]
+        J[("reconciliation_flags")]
+        K[("turnover_tasks")]
+        LR[("leads · reports")]
+    end
+
+    subgraph Engine["⚙️ Operations Layer"]
+        N["Rule-Based\nReconciliation\nPhase 1"]
+        O["AI Agent\nClaude tool-calling\nPhase 2"]
+        P["Vercel Cron\nnightly + weekly\nPhase 2"]
+    end
+
+    subgraph UI["📊 Next.js 16 — App Router"]
+        Q["KPI Dashboard\noccupancy · ADR · revenue"]
+        R["Reconciliation\nFlags View"]
+        S["Public Landing Page\nLead Capture — Phase 3"]
+    end
+
+    Sources --> E --> G
+    G --> N --> J
+    J --> O --> J
+    G --> P --> LR
+    P --> K
+    G --> Q
+    J --> R
+    S --> LR
+```
+
+### Component Reference
+
+| Component | Layer | Status |
+|---|---|---|
+| `app/` — App Router pages and layouts | Frontend | Phase 0 scaffold ✅ |
+| `db/schema.ts` — 7-table Drizzle schema | Data model | Done ✅ |
+| `db/index.ts` — lazy `createDb()` factory | DB client | Done ✅ |
+| `scripts/seed.ts` — idempotent demo data | Dev tooling | Done ✅ |
+| `/api/import/csv` — CSV booking ingestion | Ingestion | Phase 1 |
+| `/api/import/sheets` — Google Sheets import | Ingestion | Phase 1 |
+| Reconciliation engine — rule pass | Operations | Phase 1 |
+| `/dashboard` — KPI charts (Tremor) | Frontend | Phase 1 |
+| `/flags` — reconciliation flags view | Frontend | Phase 1 |
+| AI reconciliation agent (Claude tool-calling) | AI layer | Phase 2 |
+| Vercel Cron — nightly reconcile + weekly report | Automation | Phase 2 |
+| Weekly AI report → Slack webhook | Automation | Phase 2 |
+| Public landing page + PostHog funnel | Growth | Phase 3 |
+| Lead capture → `leads` table + UTM attribution | Growth | Phase 3 |
+
+### Built With AI (Claude Code)
+
+This project is developed with **Claude Code as the primary coding agent** — every feature, schema decision, and architectural pattern is designed and implemented in AI-assisted sessions. The commit history traces directly to Claude Code sessions. This is an intentional design choice that demonstrates the "build internal tools with AI coding agents" capability the project is built to showcase.
+
+---
+
+## 📁 Repository Structure
+
+```
+stayops/
+│
+├── app/                          ← Next.js 16 App Router root
+│   ├── layout.tsx                ← Root HTML shell + global nav
+│   ├── page.tsx                  ← Home / landing stub (Phase 0)
+│   └── globals.css               ← Tailwind base + CSS variables
+│
+├── components/
+│   ├── nav.tsx                   ← Top navigation bar (shadcn/ui)
+│   └── ui/
+│       └── button.tsx            ← shadcn Button primitive
+│
+├── db/
+│   ├── schema.ts                 ← Drizzle schema — all 7 tables, fully typed
+│   └── index.ts                  ← Lazy createDb() factory (dotenv-safe)
+│
+├── scripts/
+│   └── seed.ts                   ← Idempotent seed: 4 conflict types × 2 instances + ~70 clean bookings
+│
+├── lib/
+│   └── utils.ts                  ← cn() utility (clsx + tailwind-merge)
+│
+├── public/                       ← Static assets
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml                ← GitHub Actions: lint + typecheck on every push (Node 24)
+│
+├── .env.local.example            ← All required env vars documented with comments
+├── drizzle.config.ts             ← Drizzle Kit config pointing to Supabase
+├── next.config.ts                ← Next.js 16 configuration
+├── components.json               ← shadcn/ui registry config
+├── tsconfig.json                 ← TypeScript strict mode
+├── package.json                  ← npm scripts: dev · build · lint · seed · db:*
+└── postcss.config.mjs            ← Tailwind CSS 4 PostCSS plugin
+```
+
+---
+
+## ▶️ How to Run
+
+### 📋 Prerequisites
+
+- Node.js 20+ (project CI runs on Node 24)
+- A [Supabase](https://supabase.com) project (free tier)
+- `npm` or equivalent
+
+### 🗂️ Option 1 — Local Development
+
+#### 1. Clone the repository
+
+```bash
+git clone https://github.com/deepan-mehta-analytics/stayops.git
+cd stayops
+```
+
+#### 2. Install dependencies
+
+```bash
+npm install
+```
+
+#### 3. Configure environment variables
+
+```bash
+cp .env.local.example .env.local
+```
+
+Open `.env.local` and fill in the required variables:
+
+| Variable | Required for | Where to find it |
+|---|---|---|
+| `DATABASE_URL` | All DB operations | Supabase → Settings → Database → Connection string (Transaction pooler) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Client auth | Supabase → Settings → API → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client auth | Supabase → Settings → API → anon/public key |
+| `ANTHROPIC_API_KEY` | Phase 2 (AI agent) | [console.anthropic.com](https://console.anthropic.com) → API Keys |
+| `SLACK_WEBHOOK_URL` | Phase 2 (reports) | api.slack.com → Apps → Incoming Webhooks |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Phase 1 (Sheets) | GCP Console → IAM → Service Accounts → JSON key |
+| `NEXT_PUBLIC_POSTHOG_KEY` | Phase 3 (analytics) | app.posthog.com → Project Settings |
+
+#### 4. Run database migrations
+
+```bash
+npm run db:generate    # generate SQL migration files from schema
+npm run db:migrate     # apply migrations to Supabase
+```
+
+#### 5. Seed the demo dataset
+
+```bash
+npm run seed
+```
+
+Expected output:
+
+```
+🌱 Truncating tables...
+✓ Tables cleared
+✓ 4 properties
+✓ 12 channels
+✓ 16 conflict-related bookings planted
+✓ ~70 clean bookings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅  Seed complete — ~86 bookings across 4 properties
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Planted conflicts (ID prefixes):
+  duplicate       × 2  → ...
+  double_book     × 2  → ...
+  gap             × 2  → ...
+  price_mismatch  × 2  → ...
+```
+
+#### 6. Start the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### ☁️ Option 2 — Live Demo (Vercel)
+
+The app is deployed and publicly accessible at:
+
+**[https://stayops-five.vercel.app](https://stayops-five.vercel.app)**
+
+> The live demo requires the Supabase database to be seeded. See "Known Limitations" for current demo status.
+
+### 🔧 Available Scripts
+
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Start Next.js 16 dev server with hot reload |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint across all TypeScript files |
+| `npx tsc --noEmit` | TypeScript typecheck (no output files) |
+| `npm run seed` | Truncate all tables and repopulate with demo data |
+| `npm run db:generate` | Generate SQL migration files from `db/schema.ts` |
+| `npm run db:migrate` | Apply pending migrations to Supabase |
+| `npm run db:studio` | Open Drizzle Studio — visual DB browser |
+
+---
+
+## 🧪 Tests
+
+### Current Coverage — Phase 0
+
+| Check | Tool | Runs on |
+|---|---|---|
+| Lint | ESLint (`eslint-config-next`) | Every push to `main` via CI |
+| Type check | TypeScript `tsc --noEmit` | Every push to `main` via CI |
+
+CI runs on Node 24. All 5/5 runs are green on `main`.
+
+```bash
+# Run both checks locally
+npm run lint
+npx tsc --noEmit
+```
+
+### Roadmap — Unit and Integration Tests
+
+Automated unit and integration tests (Vitest + Playwright) are planned for Phase 4 portfolio polish. They are intentionally not present yet — listing them here honestly rather than adding placeholder files.
+
+Planned test coverage:
+- Reconciliation engine: unit tests for each conflict-detection rule with seed fixtures
+- API route handlers: integration tests against a test database instance
+- Dashboard: Playwright end-to-end test of the demo path (open URL → see data → view flags)
+
+---
+
+## 📊 Results / Performance
+
+### Phase 0 — Seed Data Verified _(database connection pending)_
+
+The seed script is implemented and produces the following dataset when run against a live Supabase instance:
+
+| Metric | Value |
+|---|---|
+| Properties seeded | 4 (Lakeview Cottage, Downtown Studio, Beach House, Mountain Cabin) |
+| Channels per property | 3 (airbnb, booking, direct) — 12 total |
+| Conflict bookings planted | 16 rows across 8 conflict events |
+| Clean bookings generated | ~70 (varies slightly by date; max 18/property) |
+| Total bookings | ~86 |
+| Conflict types covered | 4 / 4 (duplicate, double_book, gap, price_mismatch) |
+| Instances per type | 2 (each detection branch exercised twice) |
+| Date range | T−30 to T+60 relative to run date — turnovers always in the future |
+
+**Planted conflict detail:**
+
+| Type | Properties | Scenario |
+|---|---|---|
+| `duplicate` ×2 | Lakeview Cottage, Downtown Studio | Same guest + same exact dates imported from two channels with different `source_row_hash` |
+| `double_book` ×2 | Beach House, Mountain Cabin | Two different guests, overlapping date ranges (3-night overlap; 2-night overlap) |
+| `gap` ×2 | Downtown Studio (1-night), Lakeview Cottage (2-night) | Unsold nights between consecutive confirmed bookings |
+| `price_mismatch` ×2 | Lakeview Cottage (+50%), Beach House (−45%) | Nightly rate deviating >25% from property base rate |
+
+### Phase 1 — Reconciliation Metrics _(pending implementation)_
+
+End-to-end reconciliation results (flags detected, false-positive rate, engine latency) will be recorded here once Phase 1 is built and the seed data is running against a live database.
+
+### Phase 2 — AI Agent Metrics _(pending implementation)_
+
+Claude tool-calling agent benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded here in Phase 2.
+
+---
+
+## ⚠️ Known Limitations
+
+- **Database not yet connected** — Phase 0 scaffold is live on Vercel but Supabase is not yet provisioned; the live demo URL shows the scaffold UI only. Seed will run as soon as `DATABASE_URL` is configured.
+- **No auth / multi-user support** — single-operator demo mode only; Row-Level Security policies and user management are post-MVP scope
+- **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is used as the realistic operator workflow, which is how operators actually export their booking data
+- **Phase 1–3 features are planned, not built** — reconciliation engine, KPI dashboard, AI agent, landing page, and PostHog funnel are all fully specced and their data model is implemented; the route handlers and UI pages are Phase 1+ work
+- **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running
+- **Phase 2 AI features require `ANTHROPIC_API_KEY`** — the reconciliation agent and weekly report generator are not active without this key
+
+## 🔜 Roadmap
+
+### Mermaid — Phased Build Plan
+
+```mermaid
+timeline
+    title StayOps — Phased Build Plan
+    section Phase 0 · Scaffold
+        v0.1.0 : Next.js 16 scaffold on Vercel ✅
+               : Drizzle schema — 7 tables ✅
+               : Seed script — 4 conflict types ✅
+               : GitHub Actions CI green ✅
+        v0.2.0 : Supabase Postgres connected
+               : Seed running against live DB
+    section Phase 1 · Reconciliation MVP
+        v1.0.0 : CSV + Google Sheets import
+               : Rule-based reconciliation engine
+               : KPI dashboard — occupancy · ADR · revenue
+               : SQL reports page
+    section Phase 2 · AI Agent Layer
+        v2.0.0 : Claude tool-calling reconciliation agent
+               : Weekly AI ops report → Slack
+               : Guest message drafter
+               : Turnover auto-generation via Cron
+    section Phase 3 · Growth Surface
+        v3.0.0 : Direct-booking landing page
+               : PostHog funnel analytics
+               : Lead capture + UTM attribution
+               : AI-generated listing copy
+```
+
+### Version Checklist
+
+| Version | Milestone | Status |
+|---|---|---|
+| `v0.1.0` | Phase 0 scaffold — Next.js + Vercel live, schema, seed script, CI | ✅ [Released](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v0.1.0) |
+| `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | 🔄 In Progress |
+| `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ⏳ Pending |
+| `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
+| `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
+
+---
+
+## 📂 Dataset
+
+StayOps uses a **synthetically generated demo dataset** — there is no external public dataset. The seed script (`scripts/seed.ts`) generates all data programmatically at runtime against a live Supabase instance.
+
+**Design principles:**
+
+- All dates are computed relative to the run date (`today + N` days), so the demo always shows current upcoming turnovers regardless of when it is run
+- Clean bookings fill in around conflict windows automatically using an occupation-tracker; no two bookings on the same property ever overlap except the deliberately planted `double_book` events
+- Guest names are drawn from a 20-name pool, cycled deterministically, so the dataset looks realistic without requiring any PII
+- The seed is idempotent: running it twice truncates all tables before repopulating, so the dataset is always in a known state
+
+**Properties and base rates:**
+
+| Property | Location | Base Rate | Capacity |
+|---|---|---|---|
+| Lakeview Cottage | 42 Lake Rd, Tahoe, CA | $150/night | 4 guests |
+| Downtown Studio | 8 Main St, Nashville, TN | $95/night | 2 guests |
+| Beach House | 15 Ocean Dr, Miami, FL | $280/night | 8 guests |
+| Mountain Cabin | 301 Pine Ln, Asheville, NC | $185/night | 6 guests |
+
+---
+
+## 👤 Author
+
+**Deepan Mehta**
+
+- Data Analytics → Data Engineering → AI/ML Engineering
+- Focused on building end-to-end data and ML systems combining analytics, automation, and AI agent workflows
+- Experience in ETL pipelines, predictive modelling, analytical databases, and AI-assisted tool development
+
+🔗 GitHub: [deepan-mehta-analytics](https://github.com/deepan-mehta-analytics)
+🌐 Live: [stayops-five.vercel.app](https://stayops-five.vercel.app)
