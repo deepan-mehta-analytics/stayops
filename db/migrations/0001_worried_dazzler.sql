@@ -1,0 +1,1 @@
+ALTER TABLE "reconciliation_flags" ADD COLUMN "estimated_value" numeric(10, 2);

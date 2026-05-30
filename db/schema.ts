@@ -58,8 +58,9 @@ export const reconciliationFlags = pgTable("reconciliation_flags", {
   status:      varchar("status", { length: 20 }).default("open"),               // open | resolved | ignored
   reason:      text("reason"),                                                   // plain-English description of the conflict
   aiReasoning: text("ai_reasoning"),                                             // Claude's analysis (populated in Phase 2)
-  resolution:  text("resolution"),                                               // how the operator resolved the flag
-  createdAt:   timestamp("created_at").defaultNow().notNull(),                  // flag creation timestamp
+  resolution:      text("resolution"),                                               // how the operator resolved the flag
+  estimatedValue:  numeric("estimated_value", { precision: 10, scale: 2 }),        // $ recoverable for opportunity (gap) flags; null otherwise
+  createdAt:       timestamp("created_at").defaultNow().notNull(),                  // flag creation timestamp
   resolvedAt:  timestamp("resolved_at"),                                         // when the flag was closed (null = still open)
 });
 
