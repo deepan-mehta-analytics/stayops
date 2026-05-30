@@ -4,7 +4,7 @@
 
 Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-### What's live now — v1.1.0
+### What's live now — v1.2.0
 
 - 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
@@ -44,7 +44,7 @@ This project implements a **full-stack AI-assisted operations console for multi-
 
 It models the real-world operator workflow of importing bookings from Airbnb, Booking.com, and direct channels into a unified Postgres database, then running automated conflict detection before any human has to review a spreadsheet.
 
-**Implemented (Phase 0 + Phase 1 — v1.1.0):**
+**Implemented (Phase 0 + Phase 1 — v1.2.0):**
 
 - **Multi-channel ingestion** — CSV upload and Google Sheets API import route handlers; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - **Rule-based reconciliation engine** — detects four conflict types (duplicate bookings, double-bookings, pricing anomalies, upsell gaps) and writes structured `reconciliation_flags` with plain-English reasons
@@ -236,16 +236,21 @@ stayops/
 │   └── index.ts                  ← Lazy createDb() factory (dotenv-safe)
 │
 ├── scripts/
-│   └── seed.ts                   ← Idempotent seed: 4 conflict types × 2 instances + ~70 clean bookings
+│   ├── seed.ts                   ← Idempotent seed: 4 conflict types × 2 instances + ~70 clean bookings
+│   └── reset-flags.ts            ← Truncates reconciliation_flags so the engine re-classifies on next load
 │
 ├── lib/
+│   ├── reconciliation.ts         ← Pure classifyBookings() engine + runReconciliation() orchestrator
+│   ├── reconciliation.test.ts    ← Vitest unit tests — 8 fixtures for classifyBookings()
+│   ├── dashboard-queries.ts      ← Server-side query functions (KPI metrics, conflict count)
+│   ├── import-pipeline.ts        ← Shared CSV/Sheets parsing and upsert logic
 │   └── utils.ts                  ← cn() utility (clsx + tailwind-merge)
 │
 ├── public/                       ← Static assets
 │
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                ← GitHub Actions: lint + typecheck on every push (Node 24)
+│       └── ci.yml                ← GitHub Actions: lint + typecheck + unit tests on every push (Node 24)
 │
 ├── .env.local.example            ← All required env vars documented with comments
 ├── drizzle.config.ts             ← Drizzle Kit config pointing to Supabase
@@ -357,7 +362,9 @@ The app is deployed and publicly accessible at:
 | `npm run build` | Production build |
 | `npm run lint` | ESLint across all TypeScript files |
 | `npx tsc --noEmit` | TypeScript typecheck (no output files) |
+| `npm test` | Run Vitest unit suite (8 tests — `classifyBookings()`) |
 | `npm run seed` | Truncate all tables and repopulate with demo data |
+| `npm run reset:flags` | Clear `reconciliation_flags` so engine re-classifies on next `/reconciliation` load |
 | `npm run db:generate` | Generate SQL migration files from `db/schema.ts` |
 | `npm run db:migrate` | Apply pending migrations to Supabase |
 | `npm run db:studio` | Open Drizzle Studio — visual DB browser |
@@ -366,29 +373,37 @@ The app is deployed and publicly accessible at:
 
 ## 🧪 Tests
 
-### Current Coverage — Phase 0
+### Current Coverage — Phase 1
 
 | Check | Tool | Runs on |
 |---|---|---|
 | Lint | ESLint (`eslint-config-next`) | Every push to `main` via CI |
 | Type check | TypeScript `tsc --noEmit` | Every push to `main` via CI |
+| Unit tests | Vitest — `lib/reconciliation.test.ts` | Every push to `main` via CI |
 
-CI runs on Node 24. All 5/5 runs are green on `main`.
+CI runs on Node 24 with two parallel jobs (Lint & Typecheck + Unit Tests). All runs green on `main`.
 
 ```bash
-# Run both checks locally
+# Run locally
 npm run lint
 npx tsc --noEmit
+npm test                   # vitest run — 8 unit tests
 ```
 
-### Roadmap — Unit and Integration Tests
+**Unit test coverage** — `classifyBookings()` pure function, 8 fixtures:
 
-Automated unit and integration tests (Vitest + Playwright) are planned for Phase 4 portfolio polish. They are intentionally not present yet — listing them here honestly rather than adding placeholder files.
+- `double_book` detection for overlapping guests on the same property
+- `duplicate` detection from two channels (different `sourceRowHash`)
+- `orphan_night` for 1-night unsellable gaps (no `estimatedValue`)
+- `gap` (opportunity) for 2-night gaps with dollar estimate
+- 4-night boundary pin — no flag emitted (intentional vacancy threshold)
+- Multi-property numeric sum guard (Drizzle returns `numeric` as JS strings)
+- `price_mismatch` detection for >25% rate deviation
+- Back-to-back clean bookings → zero flags
 
-Planned test coverage:
-- Reconciliation engine: unit tests for each conflict-detection rule with seed fixtures
-- API route handlers: integration tests against a test database instance
-- Dashboard: Playwright end-to-end test of the demo path (open URL → see data → view flags)
+### Roadmap — Integration and E2E Tests
+
+API route handler integration tests and Playwright end-to-end tests are planned for Phase 4 portfolio polish.
 
 ---
 
@@ -426,8 +441,9 @@ End-to-end results against the live Supabase seed dataset:
 |---|---|
 | Planted conflict events detected | 8 / 8 (100%) |
 | Conflict types covered | 4 / 4 (duplicate, double_book, gap, price_mismatch) |
-| Additional gap flags (1-night buffer zones) | ~58 (expected — consecutive clean bookings share 1-day buffers) |
-| Total reconciliation flags written | ~66 |
+| Orphan-night flags (1-night unsellable gaps) | ~64 (classified as `orphan_night`; shown as footnote, not conflict) |
+| Revenue opportunity flags (2–3 night gaps) | 2 (classified as `gap`; shown with `$` estimate) |
+| Total reconciliation flags written | ~72 |
 | Engine implementation | Pure in-memory TypeScript — no SQL CTEs required at <1,000 rows |
 | Latency | Sub-second on Supabase free tier |
 
@@ -470,7 +486,7 @@ timeline
         v1.1.0 : Vega/Green/Blue shadcn theme ✅
                : Light / dark mode toggle ✅
                : 14 GitHub repo topics ✅
-               : Conflicts vs Opportunities UI split ✅
+        v1.2.0 : Conflicts vs Opportunities UI split ✅
                : Dollar-value opportunity estimates ✅
                : Vitest unit-test suite (8 tests, CI-enforced) ✅
     section Phase 2 · AI Agent Layer
@@ -492,7 +508,8 @@ timeline
 | `v0.1.0` | Phase 0 scaffold — Next.js + Vercel live, schema, seed script, CI | ✅ [Released](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v0.1.0) |
 | `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | ✅ Done |
 | `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.0.0) |
-| `v1.1.0` | Theme + dark mode + Conflicts/Opportunities UI split + Vitest suite | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.1.0) |
+| `v1.1.0` | Vega/Green/Blue theme + light/dark mode + 14 repo topics | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.1.0) |
+| `v1.2.0` | Conflicts/Opportunities UI split + dollar estimates + Vitest suite (8 tests, CI) | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.2.0) |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
 
