@@ -19,7 +19,7 @@ This project is deliberately built to the exact stack and problem space of the m
 [![Anthropic](https://img.shields.io/badge/Anthropic-Claude_SDK-blueviolet?style=for-the-badge)](https://www.anthropic.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://stayops-five.vercel.app)
 [![CI](https://img.shields.io/badge/CI-GitHub_Actions_✅-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/deepan-mehta-analytics/stayops/actions)
-[![Status](https://img.shields.io/badge/Status-In_Development-yellow?style=for-the-badge)](https://github.com/deepan-mehta-analytics/stayops)
+[![Status](https://img.shields.io/badge/Status-MVP_Shipped-success?style=for-the-badge)](https://github.com/deepan-mehta-analytics/stayops)
 
 ---
 
@@ -441,8 +441,8 @@ timeline
 | Version | Milestone | Status |
 |---|---|---|
 | `v0.1.0` | Phase 0 scaffold — Next.js + Vercel live, schema, seed script, CI | ✅ [Released](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v0.1.0) |
-| `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | 🔄 In Progress |
-| `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ⏳ Pending |
+| `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | ✅ Done |
+| `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.0.0) |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
 
