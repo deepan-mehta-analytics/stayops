@@ -1,7 +1,7 @@
 // ── Dashboard query functions ──────────────────────────────
 import { type Db } from "@/db/index";                 // DB type
 import * as schema from "@/db/schema";                // table definitions
-import { eq, ne, and, gte, lte } from "drizzle-orm";  // query helpers
+import { eq, ne, and, gte, lte, inArray } from "drizzle-orm";  // query helpers
 
 // ── Rolling-window date helpers ────────────────────────────
 function windowStart(): string {                       // 30 days ago as YYYY-MM-DD
@@ -153,5 +153,19 @@ export async function getOpenFlagCount(db: Db): Promise<number> {
     .select({ id: schema.reconciliationFlags.id })
     .from(schema.reconciliationFlags)
     .where(eq(schema.reconciliationFlags.status, "open"));
-  return rows.length;
+  return rows.length;                                 // total open flags including gaps and orphans
+}
+
+// ── Count of open CONFLICT flags only (excludes gap/orphan opportunities) ──
+export async function getOpenConflictCount(db: Db): Promise<number> {
+  const rows = await db
+    .select({ id: schema.reconciliationFlags.id })    // only need IDs for counting
+    .from(schema.reconciliationFlags)
+    .where(
+      and(
+        eq(schema.reconciliationFlags.status, "open"),                           // open flags only
+        inArray(schema.reconciliationFlags.type, ["duplicate", "double_book", "price_mismatch"]) // conflicts only
+      )
+    );
+  return rows.length;                                 // number of open conflicts (not opportunities)
 }
