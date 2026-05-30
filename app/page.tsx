@@ -5,7 +5,7 @@ import {
   getKpiMetrics,
   getRevenueByProperty,
   getUpcomingTurnovers,
-  getOpenFlagCount,
+  getOpenConflictCount,
 } from "@/lib/dashboard-queries";                    // pre-built query functions
 import Link from "next/link";                         // client-side navigation
 
@@ -25,11 +25,11 @@ export default async function DashboardPage() {
   const db = createDb();                               // server-side DB connection
 
   // Fetch all four data sources in parallel
-  const [kpi, byProperty, turnovers, openFlags] = await Promise.all([
+  const [kpi, byProperty, turnovers, openConflicts] = await Promise.all([
     getKpiMetrics(db),
     getRevenueByProperty(db),
     getUpcomingTurnovers(db),
-    getOpenFlagCount(db),
+    getOpenConflictCount(db),             // conflicts only — gaps/orphans never redden the dashboard
   ]);
 
   return (
@@ -58,17 +58,17 @@ export default async function DashboardPage() {
           value={`$${kpi.revenue.toLocaleString()}`}
           sub={`${kpi.bookingCount} bookings`}
         />
-        {/* Open flags card — red if any open, green if clean */}
+        {/* Conflicts card — red only when real conflicts exist; green when only gaps/orphans */}
         <Link href="/reconciliation" className="block">
           <div className={`rounded-lg border p-6 h-full transition-colors cursor-pointer ${
-            openFlags > 0
-              ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900"
-              : "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900"
+            openConflicts > 0
+              ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900"   // action required
+              : "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900" // all clear
           }`}>
-            <p className="text-sm font-medium text-zinc-500">Open Flags</p>
-            <p className="mt-1 text-3xl font-bold tracking-tight">{openFlags}</p>
+            <p className="text-sm font-medium text-zinc-500">Conflicts</p>
+            <p className="mt-1 text-3xl font-bold tracking-tight">{openConflicts}</p>
             <p className="mt-1 text-xs text-zinc-400">
-              {openFlags === 0 ? "All bookings clean" : "Click to review →"}
+              {openConflicts === 0 ? "No conflicts — bookings reconcile cleanly" : "Need action — click to review →"}
             </p>
           </div>
         </Link>
