@@ -492,7 +492,6 @@ timeline
     section Phase 2 · AI Agent Layer
         v2.0.0 : Claude tool-calling reconciliation agent
                : Weekly AI ops report → Slack
-               : Guest message drafter
                : Turnover auto-generation via Cron
     section Phase 3 · Growth Surface
         v3.0.0 : Direct-booking landing page
