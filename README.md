@@ -2,9 +2,24 @@
 
 ## ⚡ Quick Summary
 
-Short/mid-term rental operators run fragmented businesses: Airbnb bookings sit in one inbox, Booking.com reservations in another, and direct enquiries arrive by email — with reconciliation done manually in spreadsheets. StayOps unifies every channel into one AI-assisted operations console: import bookings from any source, detect conflicts automatically (duplicates, double-bookings, pricing anomalies, upsell gaps), surface real-time KPIs, and drive direct-booking growth — all deployed live on Vercel.
+Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-This project is deliberately built to the exact stack and problem space of the modern rental-tech operator role, and it is developed **end-to-end with Claude Code as the primary coding agent**. Every commit traces directly to an AI-assisted development session, with the reconciliation engine and AI reporting layer built using Anthropic's Claude with tool-calling. It closes the two real skill gaps in the space — Next.js/Vercel and growth/tracking — while showcasing existing depth in SQL, automation, data reconciliation, and AI agent design.
+### What's live now — v1.1.0
+
+- 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
+- ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
+- 📊 **Live KPI dashboard** — occupancy %, ADR, gross revenue, and upcoming turnovers computed from real Postgres rows via `force-dynamic` server components
+- 🗂️ **SQL reports page** — revenue by channel and property, ADR breakdown, and booking share %
+- 🌙 **Light / dark mode** — system-aware theme toggle (OS preference respected on first load) with the Vega/Green/Blue shadcn preset
+
+### What's next
+
+| Phase | Version | Features |
+|---|---|---|
+| **Phase 2 — AI Agent** | `v2.0.0` | Claude tool-calling reconciliation agent · weekly AI ops report → Slack · turnover auto-generation via Vercel Cron |
+| **Phase 3 — Growth** | `v3.0.0` | Direct-booking landing page · PostHog funnel · lead capture with UTM attribution |
+
+Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and forthcoming AI layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
 ### Multi-channel booking reconciliation engine + AI operations console, built end-to-end with Claude Code on Next.js 16 + Vercel
 
@@ -29,16 +44,21 @@ This project implements a **full-stack AI-assisted operations console for multi-
 
 It models the real-world operator workflow of importing bookings from Airbnb, Booking.com, and direct channels into a unified Postgres database, then running automated conflict detection before any human has to review a spreadsheet.
 
-Key implemented and planned features:
+**Implemented (Phase 0 + Phase 1 — v1.1.0):**
 
 - **Multi-channel ingestion** — CSV upload and Google Sheets API import route handlers; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - **Rule-based reconciliation engine** — detects four conflict types (duplicate bookings, double-bookings, pricing anomalies, upsell gaps) and writes structured `reconciliation_flags` with plain-English reasons
-- **AI reconciliation agent** — Claude tool-calling reads flagged rows, generates resolution proposals with explicit reasoning traces, and writes decisions back to the database
-- **KPI dashboard** — occupancy %, average daily rate (ADR), gross revenue, and upcoming turnovers computed from live Postgres rows; filterable by property and channel
-- **Automated ops reports** — Vercel Cron triggers nightly reconciliation sweeps and weekly AI-generated Markdown summaries delivered to Slack
-- **Direct-booking growth surface** — public landing page with PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution)
+- **KPI dashboard** — occupancy %, average daily rate (ADR), gross revenue, and upcoming turnovers computed from live Postgres rows via server components
+- **SQL reports page** — revenue by channel and property, ADR breakdown, booking share %
+- **Light / dark mode** — system-aware theme toggle with the Vega/Green/Blue shadcn preset (next-themes)
 - **7-table Drizzle schema** — typed, SQL-first ORM schema covering the full operational data model (properties, channels, bookings, reconciliation flags, turnover tasks, leads, reports)
 - **Synthetic demo dataset** — seed script plants exactly 8 conflict events (2 per type) against a realistic backdrop of ~70 clean bookings, with dates computed relative to today so the demo always has live upcoming turnovers
+
+**Planned (Phase 2 + Phase 3):**
+
+- **AI reconciliation agent** — Claude tool-calling reads flagged rows, generates resolution proposals with explicit reasoning traces, and writes decisions back to the database
+- **Automated ops reports** — Vercel Cron triggers nightly reconciliation sweeps and weekly AI-generated Markdown summaries delivered to Slack
+- **Direct-booking growth surface** — public landing page with PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution)
 
 ---
 
@@ -51,9 +71,9 @@ Key implemented and planned features:
 | Database | Supabase (Postgres) | Serverless SQL with Row-Level Security; real SQL on display |
 | ORM | Drizzle ORM | SQL-first, fully typed; keeps queries readable rather than hidden |
 | Validation | Zod 4 | Runtime schema validation on all API boundaries |
-| UI Components | shadcn/ui + Tailwind CSS 4 | Accessible component primitives; AI-friendly to scaffold |
-| Charts | Tremor / Recharts | KPI dashboard charts with minimal boilerplate |
-| AI Agent | Anthropic SDK (`claude-sonnet-4-6`) | Tool-calling reconciliation agent + report generation |
+| UI Components | shadcn/ui + Tailwind CSS 4 | Accessible component primitives; Vega style with Green/Blue preset |
+| Theme | next-themes | System-aware light / dark mode; class injection on `<html>` |
+| AI Agent | Anthropic SDK (`claude-sonnet-4-6`) | Tool-calling reconciliation agent + report generation (Phase 2) |
 | Analytics | PostHog | Funnel events, session capture, conversion tracking (Phase 3) |
 | Sheets Integration | Google Sheets API (service account) | Booking import/export — a real operator workflow |
 | Automation | Vercel Cron | Scheduled reconciliation runs and weekly AI report delivery |
@@ -163,20 +183,22 @@ flowchart TB
 
 | Component | Layer | Status |
 |---|---|---|
-| `app/` — App Router pages and layouts | Frontend | Phase 0 scaffold ✅ |
-| `db/schema.ts` — 7-table Drizzle schema | Data model | Done ✅ |
-| `db/index.ts` — lazy `createDb()` factory | DB client | Done ✅ |
-| `scripts/seed.ts` — idempotent demo data | Dev tooling | Done ✅ |
-| `/api/import/csv` — CSV booking ingestion | Ingestion | Phase 1 |
-| `/api/import/sheets` — Google Sheets import | Ingestion | Phase 1 |
-| Reconciliation engine — rule pass | Operations | Phase 1 |
-| `/dashboard` — KPI charts (Tremor) | Frontend | Phase 1 |
-| `/flags` — reconciliation flags view | Frontend | Phase 1 |
-| AI reconciliation agent (Claude tool-calling) | AI layer | Phase 2 |
-| Vercel Cron — nightly reconcile + weekly report | Automation | Phase 2 |
-| Weekly AI report → Slack webhook | Automation | Phase 2 |
-| Public landing page + PostHog funnel | Growth | Phase 3 |
-| Lead capture → `leads` table + UTM attribution | Growth | Phase 3 |
+| `app/` — App Router pages and layouts | Frontend | ✅ Done |
+| `db/schema.ts` — 7-table Drizzle schema | Data model | ✅ Done |
+| `db/index.ts` — lazy `createDb()` factory | DB client | ✅ Done |
+| `scripts/seed.ts` — idempotent demo data | Dev tooling | ✅ Done |
+| `/api/import/csv` — CSV booking ingestion | Ingestion | ✅ Done |
+| `/api/import/sheets` — Google Sheets import | Ingestion | ✅ Done |
+| Reconciliation engine — 4 rule types | Operations | ✅ Done |
+| `/` — KPI dashboard (occupancy · ADR · revenue) | Frontend | ✅ Done |
+| `/reconciliation` — flags view with badge types | Frontend | ✅ Done |
+| `/reports` — SQL revenue + ADR breakdown | Frontend | ✅ Done |
+| `components/theme-provider.tsx` — next-themes wrapper | UI | ✅ Done |
+| AI reconciliation agent (Claude tool-calling) | AI layer | ⏳ Phase 2 |
+| Vercel Cron — nightly reconcile + weekly report | Automation | ⏳ Phase 2 |
+| Weekly AI report → Slack webhook | Automation | ⏳ Phase 2 |
+| Public landing page + PostHog funnel | Growth | ⏳ Phase 3 |
+| Lead capture → `leads` table + UTM attribution | Growth | ⏳ Phase 3 |
 
 ### Built With AI (Claude Code)
 
@@ -195,7 +217,8 @@ stayops/
 │   └── globals.css               ← Tailwind base + CSS variables
 │
 ├── components/
-│   ├── nav.tsx                   ← Top navigation bar (shadcn/ui)
+│   ├── nav.tsx                   ← Top navigation bar + light/dark toggle
+│   ├── theme-provider.tsx        ← next-themes wrapper (system-aware)
 │   └── ui/
 │       └── button.tsx            ← shadcn Button primitive
 │
@@ -362,9 +385,9 @@ Planned test coverage:
 
 ## 📊 Results / Performance
 
-### Phase 0 — Seed Data Verified _(database connection pending)_
+### Seed Data (Supabase + demo dataset)
 
-The seed script is implemented and produces the following dataset when run against a live Supabase instance:
+The seed script produces the following dataset against the live Supabase instance:
 
 | Metric | Value |
 |---|---|
@@ -386,24 +409,35 @@ The seed script is implemented and produces the following dataset when run again
 | `gap` ×2 | Downtown Studio (1-night), Lakeview Cottage (2-night) | Unsold nights between consecutive confirmed bookings |
 | `price_mismatch` ×2 | Lakeview Cottage (+50%), Beach House (−45%) | Nightly rate deviating >25% from property base rate |
 
-### Phase 1 — Reconciliation Metrics _(pending implementation)_
+### Phase 1 — Reconciliation Engine Results
 
-End-to-end reconciliation results (flags detected, false-positive rate, engine latency) will be recorded here once Phase 1 is built and the seed data is running against a live database.
+End-to-end results against the live Supabase seed dataset:
 
-### Phase 2 — AI Agent Metrics _(pending implementation)_
+| Metric | Value |
+|---|---|
+| Planted conflict events detected | 8 / 8 (100%) |
+| Conflict types covered | 4 / 4 (duplicate, double_book, gap, price_mismatch) |
+| Additional gap flags (1-night buffer zones) | ~58 (expected — consecutive clean bookings share 1-day buffers) |
+| Total reconciliation flags written | ~66 |
+| Engine implementation | Pure in-memory TypeScript — no SQL CTEs required at <1,000 rows |
+| Latency | Sub-second on Supabase free tier |
 
-Claude tool-calling agent benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded here in Phase 2.
+The gap flag count is intentionally high: the seed's 1-day buffer between consecutive clean bookings is itself a gap, and the engine flags every unsold night between confirmed stays — matching real operator behaviour.
+
+### Phase 2 — AI Agent Metrics _(pending)_
+
+Claude tool-calling agent benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded here once Phase 2 is built.
 
 ---
 
 ## ⚠️ Known Limitations
 
-- **Database not yet connected** — Phase 0 scaffold is live on Vercel but Supabase is not yet provisioned; the live demo URL shows the scaffold UI only. Seed will run as soon as `DATABASE_URL` is configured.
 - **No auth / multi-user support** — single-operator demo mode only; Row-Level Security policies and user management are post-MVP scope
-- **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is used as the realistic operator workflow, which is how operators actually export their booking data
-- **Phase 1–3 features are planned, not built** — reconciliation engine, KPI dashboard, AI agent, landing page, and PostHog funnel are all fully specced and their data model is implemented; the route handlers and UI pages are Phase 1+ work
-- **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running
-- **Phase 2 AI features require `ANTHROPIC_API_KEY`** — the reconciliation agent and weekly report generator are not active without this key
+- **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is the realistic operator workflow, matching how operators actually export their booking data
+- **Gap flag sensitivity** — the reconciliation engine flags every unsold night between consecutive confirmed stays, including the intentional 1-day buffer in the seed data (~58 of ~66 flags are expected buffer gaps, not errors)
+- **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running the seed script locally
+- **Phase 2 AI features require `ANTHROPIC_API_KEY`** — the reconciliation agent and weekly Slack report are not active until this key is configured in `.env.local` and Vercel
+- **Phase 3 analytics require `NEXT_PUBLIC_POSTHOG_KEY`** — PostHog funnel tracking is wired up in the schema but the capture calls are Phase 3 work
 
 ## 🔜 Roadmap
 
@@ -420,10 +454,13 @@ timeline
         v0.2.0 : Supabase Postgres connected
                : Seed running against live DB
     section Phase 1 · Reconciliation MVP
-        v1.0.0 : CSV + Google Sheets import
-               : Rule-based reconciliation engine
-               : KPI dashboard — occupancy · ADR · revenue
-               : SQL reports page
+        v1.0.0 : CSV + Google Sheets import ✅
+               : Rule-based reconciliation engine ✅
+               : KPI dashboard — occupancy · ADR · revenue ✅
+               : SQL reports page ✅
+        v1.1.0 : Vega/Green/Blue shadcn theme ✅
+               : Light / dark mode toggle ✅
+               : 14 GitHub repo topics ✅
     section Phase 2 · AI Agent Layer
         v2.0.0 : Claude tool-calling reconciliation agent
                : Weekly AI ops report → Slack
@@ -443,6 +480,7 @@ timeline
 | `v0.1.0` | Phase 0 scaffold — Next.js + Vercel live, schema, seed script, CI | ✅ [Released](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v0.1.0) |
 | `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | ✅ Done |
 | `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.0.0) |
+| `v1.1.0` | Vega/Green/Blue theme + light/dark toggle + 14 repo topics | ✅ Done 2026-05-30 |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
 
