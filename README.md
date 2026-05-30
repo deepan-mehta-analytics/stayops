@@ -443,7 +443,7 @@ Claude tool-calling agent benchmarks (resolution accuracy, reasoning trace quali
 
 - **No auth / multi-user support** — single-operator demo mode only; Row-Level Security policies and user management are post-MVP scope
 - **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is the realistic operator workflow, matching how operators actually export their booking data
-- **Gap flag sensitivity** — the reconciliation engine flags every unsold night between consecutive confirmed stays, including the intentional 1-day buffer in the seed data (~58 of ~66 flags are expected buffer gaps, not errors)
+- **Gap flag classification** — 1-night "orphan" windows between stays are detected but shown only as a footnote count (typically unsellable under a 2-night minimum). 2–3 night gaps are shown as revenue Opportunities with a `$` estimate. 4+ night gaps are treated as intentional vacancy and not flagged.
 - **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running the seed script locally
 - **Phase 2 AI features require `ANTHROPIC_API_KEY`** — the reconciliation agent and weekly Slack report are not active until this key is configured in `.env.local` and Vercel
 - **Phase 3 analytics require `NEXT_PUBLIC_POSTHOG_KEY`** — PostHog funnel tracking is wired up in the schema but the capture calls are Phase 3 work
@@ -470,6 +470,9 @@ timeline
         v1.1.0 : Vega/Green/Blue shadcn theme ✅
                : Light / dark mode toggle ✅
                : 14 GitHub repo topics ✅
+               : Conflicts vs Opportunities UI split ✅
+               : Dollar-value opportunity estimates ✅
+               : Vitest unit-test suite (8 tests, CI-enforced) ✅
     section Phase 2 · AI Agent Layer
         v2.0.0 : Claude tool-calling reconciliation agent
                : Weekly AI ops report → Slack
@@ -489,7 +492,7 @@ timeline
 | `v0.1.0` | Phase 0 scaffold — Next.js + Vercel live, schema, seed script, CI | ✅ [Released](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v0.1.0) |
 | `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | ✅ Done |
 | `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.0.0) |
-| `v1.1.0` | Vega/Green/Blue theme + light/dark toggle + 14 repo topics | ✅ Done 2026-05-30 |
+| `v1.1.0` | Theme + dark mode + Conflicts/Opportunities UI split + Vitest suite | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.1.0) |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
 
