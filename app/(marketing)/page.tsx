@@ -45,7 +45,7 @@ export default async function LandingPage({
 
         {/* Lead capture form section */}
         <section id="lead-form" className="bg-slate-50 py-20 px-6">
-          <div className="max-w-lg mx-auto">
+          <div className="max-w-xl mx-auto">         {/* widened from max-w-lg so heading fits on one line */}
             <LeadForm
               utmSource={utmSource}
               utmMedium={utmMedium}
