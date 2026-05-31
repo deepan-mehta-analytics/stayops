@@ -22,12 +22,12 @@ export function Nav() {
         {/* brand wordmark — Poppins bold, mint colour, links to landing page */}
         <Link
           href="/"
-          className="font-[family-name:var(--font-poppins)] font-bold text-[#00e5a0] tracking-tight text-sm shrink-0"
+          className="font-[family-name:var(--font-poppins)] font-bold text-[#00e5a0] tracking-tight text-lg shrink-0"
         >
           StayOps
         </Link>
 
-        {/* nav links — active: mint pill; inactive: slate-500, brightens on hover */}
+        {/* nav links — active: mint pill (unchanged); idle: white, turns mint on hover */}
         <div className="flex items-center gap-1">
           {links.map((link) => {
             const isActive = pathname.startsWith(link.href);   // prefix match handles sub-routes
@@ -35,10 +35,10 @@ export function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                className={`px-3 py-1.5 rounded-full text-base transition-colors duration-150 ${
                   isActive
-                    ? "bg-[rgba(0,229,160,0.12)] text-[#00e5a0] font-medium"   // active: mint pill
-                    : "text-[#64748b] hover:text-white hover:bg-white/10"      // inactive: slate, fades to white
+                    ? "bg-[rgba(0,229,160,0.12)] text-[#00e5a0] font-medium"   // active: mint pill — unchanged
+                    : "text-white/80 hover:text-[#00e5a0] hover:bg-white/5"    // idle: white; hover → mint
                 }`}
               >
                 {link.label}
@@ -50,8 +50,8 @@ export function Nav() {
         {/* spacer pushes right-side actions to the edge */}
         <div className="ml-auto" />
 
-        {/* sign-out icon — slate on dark nav, brightens to white on hover */}
-        <SignOutButton className="text-[#64748b] hover:text-white hover:bg-white/10" />
+        {/* sign-out icon — white on dark nav, turns mint on hover */}
+        <SignOutButton className="text-white/70 hover:text-[#00e5a0] hover:bg-white/5" />
 
       </div>
     </nav>
