@@ -54,10 +54,14 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 - **7-table Drizzle schema** — typed, SQL-first ORM schema covering the full operational data model (properties, channels, bookings, reconciliation flags, turnover tasks, leads, reports)
 - **Synthetic demo dataset** — seed script plants exactly 8 conflict events (2 per type) against a realistic backdrop of ~70 clean bookings, with dates computed relative to today so the demo always has live upcoming turnovers
 
-**Planned (Phase 2 + Phase 3):**
+**Implemented (Phase 2 — v2.0.0):**
 
-- **AI reconciliation agent** — Claude tool-calling reads flagged rows, generates resolution proposals with explicit reasoning traces, and writes decisions back to the database
-- **Automated ops reports** — Vercel Cron triggers nightly reconciliation sweeps and weekly AI-generated Markdown summaries delivered to Slack
+- **AI reconciliation agent** — Claude tool-calling reads flagged rows, fetches booking and property context via tools, streams reasoning token-by-token, and proposes a resolution with a 0–100 confidence score
+- **Operator review UI** — ConflictSlideOver panel with idle → streaming → proposal states; Accept writes audit trail (`acceptedBy`, `acceptedAt`, `aiConfidence`); 👍/👎 buttons capture training labels for Phase 3 ML
+- **Automated ops reports** — Vercel Cron triggers nightly turnover task generation and weekly AI-generated Markdown summaries with option to deliver to Slack
+
+**Planned (Phase 3):**
+
 - **Direct-booking growth surface** — public landing page with PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution)
 
 ---
@@ -462,7 +466,7 @@ The gap flag count is intentionally high: the seed's 1-day buffer between consec
 
 ### Phase 2 — AI Agent
 
-Phase 2 shipped (v2.0.0). Runtime benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded once `ANTHROPIC_API_KEY` is configured in Vercel and the feature flag is enabled.
+Phase 2 shipped (v2.0.0). `ANTHROPIC_API_KEY` is configured in Vercel and the AI agent is live in production. Runtime benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded as usage data accumulates.
 
 ---
 
@@ -472,7 +476,7 @@ Phase 2 shipped (v2.0.0). Runtime benchmarks (resolution accuracy, reasoning tra
 - **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is the realistic operator workflow, matching how operators actually export their booking data
 - **Gap flag classification** — 1-night "orphan" windows between stays are detected but shown only as a footnote count (typically unsellable under a 2-night minimum). 2–3 night gaps are shown as revenue Opportunities with a `$` estimate. 4+ night gaps are treated as intentional vacancy and not flagged.
 - **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running the seed script locally
-- **Phase 2 AI features require `ANTHROPIC_API_KEY`** — the reconciliation agent and weekly Slack report are not active until this key is configured in `.env.local` and Vercel
+- **Phase 2 AI features require `ANTHROPIC_API_KEY` in `.env.local` for local development** — the key is configured in Vercel production; copy `.env.local.example` and add the key to run the agent locally
 - **Phase 3 analytics require `NEXT_PUBLIC_POSTHOG_KEY`** — PostHog funnel tracking is wired up in the schema but the capture calls are Phase 3 work
 
 ## 🔜 Roadmap
