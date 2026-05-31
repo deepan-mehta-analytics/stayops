@@ -4,7 +4,7 @@
 
 Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-### What's live now — v2.0.0
+### What's live now — v3.0.0
 
 - 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
@@ -13,12 +13,13 @@ Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and 
 - 🌙 **Light / dark mode** — system-aware theme toggle (OS preference respected on first load) with the Vega/Green/Blue shadcn preset
 - 🤖 **AI reconciliation agent** — Claude tool-calling reads flagged conflicts, streams reasoning token-by-token, and proposes a resolution with a 0–100 confidence score; operator accepts or dismisses with 👍/👎 feedback
 - ⏰ **Vercel Cron automation** — nightly turnover task generation + weekly AI-generated ops report with optional Slack delivery
+- 🌐 **Public landing page** — full-width AI-generated property banner, hero section, animated metrics strip, 6-feature grid, PostHog funnel tracking, and lead capture form with UTM attribution into the `leads` table
 
 ### What's next
 
 | Phase | Version | Features |
 |---|---|---|
-| **Phase 3 — Growth** | `v3.0.0` | Direct-booking landing page · PostHog funnel · lead capture with UTM attribution |
+| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme · admin auth · Playwright E2E · README screenshots |
 
 Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and AI agent layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
@@ -61,9 +62,16 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 - **Operator review UI** — ConflictSlideOver panel with idle → streaming → proposal states; Accept writes audit trail (`acceptedBy`, `acceptedAt`, `aiConfidence`); 👍/👎 buttons capture training labels for Phase 3 ML
 - **Automated ops reports** — Vercel Cron triggers nightly turnover task generation and weekly AI-generated Markdown summaries with option to deliver to Slack
 
-**Planned (Phase 3):**
+**Implemented (Phase 3 — v3.0.0):**
 
-- **Direct-booking growth surface** — public landing page with PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution)
+- **Direct-booking growth surface** — public landing page with AI-generated property banner, PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution), 6 review cards with modal, animated metrics strip, and lead capture form
+
+**In progress (Phase 4 — portfolio polish):**
+
+- **Dashboard theme alignment** — ops console visual identity matched to landing page brand
+- **Admin authentication** — middleware-protected ops console with login page
+- **Playwright E2E** — full end-to-end test suite against live Vercel deployment
+- **README screenshots** — auto-captured from live pages
 
 ---
 
@@ -211,8 +219,12 @@ flowchart TB
 | AI reconciliation agent (Claude tool-calling) | AI layer | ✅ Done |
 | Vercel Cron — nightly reconcile + weekly report | Automation | ✅ Done |
 | Weekly AI report → Slack webhook | Automation | ✅ Done |
-| Public landing page + PostHog funnel | Growth | ⏳ Phase 3 |
-| Lead capture → `leads` table + UTM attribution | Growth | ⏳ Phase 3 |
+| Public landing page + PostHog funnel | Growth | ✅ Done |
+| Lead capture → `leads` table + UTM attribution | Growth | ✅ Done |
+| AI-generated property banner (Gemini triptych) | Growth | ✅ Done |
+| Admin authentication + protected ops console | Security | 🔄 Phase 4 |
+| Dashboard theme — brand alignment | UI | 🔄 Phase 4 |
+| Playwright E2E test suite | Testing | 🔄 Phase 4 |
 
 ### Built With AI (Claude Code)
 
@@ -226,15 +238,30 @@ This project is developed with **Claude Code as the primary coding agent** — e
 stayops/
 │
 ├── app/                          ← Next.js 16 App Router root
-│   ├── layout.tsx                ← Root HTML shell + global nav
-│   ├── page.tsx                  ← Home / landing stub (Phase 0)
-│   └── globals.css               ← Tailwind base + CSS variables
+│   ├── layout.tsx                ← Bare HTML shell — fonts + globals only
+│   ├── globals.css               ← Tailwind base + CSS variables (Vega/Green/Blue preset)
+│   ├── (marketing)/              ← Route group — landing page (light, Poppins, PostHog)
+│   │   ├── layout.tsx            ← Marketing layout — Poppins font, OG metadata
+│   │   └── page.tsx              ← Landing page — banner + hero + sections + lead form
+│   └── (app)/                    ← Route group — ops console (theme toggle, nav)
+│       ├── layout.tsx            ← App layout — ThemeProvider + Nav wrapper
+│       └── dashboard/page.tsx    ← KPI dashboard (moved from root)
 │
 ├── components/
-│   ├── nav.tsx                   ← Top navigation bar + light/dark toggle
+│   ├── nav.tsx                   ← Ops console nav — Dashboard/Bookings/Reconciliation/Reports
 │   ├── theme-provider.tsx        ← next-themes wrapper (system-aware)
 │   ├── conflict-slide-over.tsx   ← AI analysis panel — idle/streaming/proposal states
 │   ├── reconciliation-client.tsx ← Client boundary: row selection + slide-over wiring
+│   ├── marketing/                ← Landing page components (Phase 3)
+│   │   ├── marketing-nav.tsx     ← Sticky transparent nav — Features / How it works / Request Demo
+│   │   ├── property-banner.tsx   ← Full-bleed AI-generated triptych banner (Gemini)
+│   │   ├── hero.tsx              ← Dark gradient hero — headline + screenshot card + CTAs
+│   │   ├── metrics-strip.tsx     ← Animated counter strip (IntersectionObserver count-up)
+│   │   ├── features-grid.tsx     ← 6 feature cards with stagger animation
+│   │   ├── how-it-works.tsx      ← 3-step horizontal flow section
+│   │   ├── social-proof.tsx      ← 6 review cards (auto-fill grid) + reviews modal
+│   │   ├── lead-form.tsx         ← Lead capture form with PostHog funnel events
+│   │   └── posthog-provider.tsx  ← PHProvider wrapper (init via instrumentation-client.ts)
 │   └── ui/
 │       └── button.tsx            ← shadcn Button primitive
 │
@@ -258,6 +285,9 @@ stayops/
 │   └── utils.ts                  ← cn() utility (clsx + tailwind-merge)
 │
 ├── public/                       ← Static assets
+│   └── banner-properties.png     ← AI-generated STR triptych (Gemini — beach/mountain/city)
+│
+├── instrumentation-client.ts     ← PostHog init (client-side, marketing pages only)
 │
 ├── .github/
 │   └── workflows/
