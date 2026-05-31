@@ -48,16 +48,16 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── Vega / Green / Blue — preset b3ZMmbVHcm ──────────────── */
+/* ── Vega / Green / Blue — preset b3ZMmbVHcm — Theme F: mint primary, #f8fafc bg ── */
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0.003 240);              /* #f8fafc — off-white ops console bg */
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(1 0 0);                              /* pure white cards pop off #f8fafc bg */
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.527 0.154 150.069);             /* green brand colour */
-  --primary-foreground: oklch(0.982 0.018 155.826);  /* near-white with green tint */
+  --primary: oklch(0.85 0.185 162);                  /* #00e5a0 mint — matches nav accent and landing page */
+  --primary-foreground: oklch(0.13 0.04 240);        /* dark navy text on mint buttons — high contrast */
   --secondary: oklch(0.967 0.001 286.375);           /* light lavender-grey */
   --secondary-foreground: oklch(0.21 0.006 285.885); /* dark lavender-grey */
   --muted: oklch(0.97 0 0);
@@ -76,7 +76,7 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.627 0.194 149.214);           /* green sidebar accent */
+  --sidebar-primary: oklch(0.85 0.185 162);                /* mint sidebar accent — matches --primary */
   --sidebar-primary-foreground: oklch(0.982 0.018 155.826);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);

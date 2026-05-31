@@ -5,7 +5,7 @@ import { Button }             from "@/components/ui/button";   // shadcn ghost i
 import { LogOut }             from "lucide-react";             // logout icon
 
 // ── Sign-out icon button — lives in the ops console nav ──────────────────────
-export function SignOutButton() {
+export function SignOutButton({ className }: { className?: string }) {
   const router = useRouter();                                   // for redirect after sign-out
 
   async function handleSignOut() {
@@ -20,6 +20,7 @@ export function SignOutButton() {
       variant="ghost"
       size="icon"
       aria-label="Sign out"
+      className={className}                                     // forwarded so nav can set colour on dark bg
       onClick={handleSignOut}
     >
       <LogOut className="h-4 w-4" />                           {/* door-with-arrow logout icon */}

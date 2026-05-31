@@ -9,10 +9,10 @@ import {
 } from "@/lib/dashboard-queries";                    // pre-built query functions
 import Link from "next/link";                         // client-side navigation
 
-// ── KPI stat card component ────────────────────────────────
+// ── KPI stat card component — mint top accent border ──────
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6">
+    <div className="rounded-lg border border-zinc-200 border-t-2 [border-top-color:#00e5a0] bg-white p-6">
       <p className="text-sm font-medium text-zinc-500">{label}</p>
       <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
       {sub && <p className="mt-1 text-xs text-zinc-400">{sub}</p>}
@@ -58,12 +58,12 @@ export default async function DashboardPage() {
           value={`$${kpi.revenue.toLocaleString()}`}
           sub={`${kpi.bookingCount} bookings`}
         />
-        {/* Conflicts card — red only when real conflicts exist; green when only gaps/orphans */}
+        {/* Conflicts card — red when conflicts exist, green when clear; links to reconciliation */}
         <Link href="/reconciliation" className="block">
           <div className={`rounded-lg border p-6 h-full transition-colors cursor-pointer ${
             openConflicts > 0
-              ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 hover:bg-red-100 dark:hover:bg-red-900"   // action required
-              : "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900" // all clear
+              ? "border-red-200 bg-red-50 hover:bg-red-100"      // action required
+              : "border-green-200 bg-green-50 hover:bg-green-100" // all clear
           }`}>
             <p className="text-sm font-medium text-zinc-500">Conflicts</p>
             <p className="mt-1 text-3xl font-bold tracking-tight">{openConflicts}</p>
@@ -80,9 +80,9 @@ export default async function DashboardPage() {
         {byProperty.length === 0 ? (
           <p className="text-sm text-zinc-400">No confirmed bookings in the last 30 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-50 dark:bg-zinc-800/50">
+              <thead className="bg-zinc-50 ">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
                   <th className="px-4 py-3 text-right font-medium text-zinc-500">Revenue</th>
@@ -90,9 +90,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-right font-medium text-zinc-500">ADR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tbody className="divide-y divide-zinc-100 ">
                 {byProperty.map((row) => (
-                  <tr key={row.name} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+                  <tr key={row.name} className="hover:bg-zinc-50 ">
                     <td className="px-4 py-3 font-medium">{row.name}</td>
                     <td className="px-4 py-3 text-right">${row.revenue.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">{row.nights}</td>
@@ -111,9 +111,9 @@ export default async function DashboardPage() {
         {turnovers.length === 0 ? (
           <p className="text-sm text-zinc-400">No check-outs in the next 7 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-50 dark:bg-zinc-800/50">
+              <thead className="bg-zinc-50 ">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
                   <th className="px-4 py-3 text-left font-medium text-zinc-500">Guest</th>
@@ -121,9 +121,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-left font-medium text-zinc-500">Channel</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tbody className="divide-y divide-zinc-100 ">
                 {turnovers.map((t) => (
-                  <tr key={t.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+                  <tr key={t.id} className="hover:bg-zinc-50 ">
                     <td className="px-4 py-3 font-medium">{t.propertyName}</td>
                     <td className="px-4 py-3">{t.guestName}</td>
                     <td className="px-4 py-3">{t.checkOut}</td>
