@@ -1,12 +1,13 @@
 import { Suspense }         from "react";                          // required for PostHogProvider (uses useSearchParams internally)
-import { MarketingNav }     from "@/components/marketing/marketing-nav";   // sticky transparent nav
-import { Hero }             from "@/components/marketing/hero";             // dark gradient hero
-import { MetricsStrip }     from "@/components/marketing/metrics-strip";    // animated counters
-import { FeaturesGrid }     from "@/components/marketing/features-grid";    // 6 feature cards
-import { HowItWorks }       from "@/components/marketing/how-it-works";     // 3-step section
-import { SocialProof }      from "@/components/marketing/social-proof";     // testimonial card
-import { LeadForm }         from "@/components/marketing/lead-form";        // lead capture form
-import { PostHogProvider }  from "@/components/marketing/posthog-provider"; // PostHog context
+import { MarketingNav }     from "@/components/marketing/marketing-nav";       // sticky transparent nav
+import { PropertyBanner }   from "@/components/marketing/property-banner";     // full-width AI-generated property image banner
+import { Hero }             from "@/components/marketing/hero";                // dark gradient hero
+import { MetricsStrip }     from "@/components/marketing/metrics-strip";       // animated counters
+import { FeaturesGrid }     from "@/components/marketing/features-grid";       // 6 feature cards
+import { HowItWorks }       from "@/components/marketing/how-it-works";        // 3-step section
+import { SocialProof }      from "@/components/marketing/social-proof";        // testimonial card
+import { LeadForm }         from "@/components/marketing/lead-form";           // lead capture form
+import { PostHogProvider }  from "@/components/marketing/posthog-provider";    // PostHog context
 
 // ── Landing page — reads UTM params server-side ───────────
 export default async function LandingPage({
@@ -24,7 +25,9 @@ export default async function LandingPage({
     <Suspense fallback={null}>
       <PostHogProvider>
 
-        <MarketingNav />                                         {/* sticky transparent nav — overlays hero */}
+        <MarketingNav />                                         {/* sticky transparent nav — overlays banner */}
+
+        <PropertyBanner />                                       {/* full-bleed AI triptych — beach, mountain, city */}
 
         <Hero
           utmSource={utmSource}
