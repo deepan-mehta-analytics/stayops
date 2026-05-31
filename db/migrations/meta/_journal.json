@@ -43,6 +43,13 @@
       "when": 1780244000000,
       "tag": "0005_leads_rls_contact_check",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1780245000000,
+      "tag": "0006_all_tables_rls",
+      "breakpoints": true
     }
   ]
 }
