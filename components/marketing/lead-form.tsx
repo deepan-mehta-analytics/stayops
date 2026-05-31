@@ -121,7 +121,7 @@ export function LeadForm({ utmSource, utmMedium, utmCampaign }: LeadFormProps) {
     <div className="bg-white rounded-2xl border border-slate-200 shadow-xl p-8">
 
       {/* Form heading */}
-      <h2 className="font-[family-name:var(--font-poppins)] font-bold text-3xl text-slate-900 mb-2">
+      <h2 className="font-[family-name:var(--font-poppins)] font-bold text-2xl text-slate-900 mb-2">  {/* text-2xl fits on one line at card width */}
         Ready to reconcile your properties?
       </h2>
       <p className="text-slate-500 text-sm mb-6">
