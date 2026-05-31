@@ -62,6 +62,10 @@ export const reconciliationFlags = pgTable("reconciliation_flags", {
   estimatedValue:  numeric("estimated_value", { precision: 10, scale: 2 }),        // $ recoverable for opportunity (gap) flags; null otherwise
   createdAt:       timestamp("created_at").defaultNow().notNull(),                  // flag creation timestamp
   resolvedAt:  timestamp("resolved_at"),                                         // when the flag was closed (null = still open)
+  acceptedBy:   text("accepted_by"),                                           // who clicked Accept — audit trail (future: user ID; default "operator")
+  acceptedAt:   timestamp("accepted_at"),                                      // when Accept was clicked — timestamp for audit log
+  aiConfidence: integer("ai_confidence"),                                      // Claude's probability score 0–100 stored at resolve time
+  userFeedback: varchar("user_feedback", { length: 20 }),                     // operator feedback: "correct" | "wrong" | null — training label for Phase 3 ML
 });
 
 // ── Turnover tasks ────────────────────────────────────────
