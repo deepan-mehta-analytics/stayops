@@ -249,9 +249,17 @@ stayops/
 │   ├── (marketing)/              ← Route group — landing page (light, Poppins, PostHog)
 │   │   ├── layout.tsx            ← Marketing layout — Poppins font, OG metadata
 │   │   └── page.tsx              ← Landing page — banner + hero + sections + lead form
-│   └── (app)/                    ← Route group — ops console (theme toggle, nav)
-│       ├── layout.tsx            ← App layout — ThemeProvider + Nav wrapper
-│       └── dashboard/page.tsx    ← KPI dashboard (moved from root)
+│   ├── (app)/                    ← Route group — ops console (theme toggle, nav)
+│   │   ├── layout.tsx            ← App layout — ThemeProvider + Nav wrapper
+│   │   └── dashboard/page.tsx    ← KPI dashboard (moved from root)
+│   └── api/
+│       ├── ai/
+│       │   ├── analyze/route.ts  ← POST: stream Claude analysis for a flag
+│       │   ├── resolve/route.ts  ← POST: accept proposal, write audit trail
+│       │   └── feedback/route.ts ← POST: record 👍/👎 without resolving
+│       └── cron/
+│           ├── weekly-report/route.ts     ← POST: generate + deliver weekly report (CRON_SECRET guarded)
+│           └── generate-turnovers/route.ts ← POST: idempotent nightly turnover creation
 │
 ├── components/
 │   ├── nav.tsx                   ← Ops console nav — Dashboard/Bookings/Reconciliation/Reports + sign-out
@@ -306,16 +314,6 @@ stayops/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                ← GitHub Actions: lint + typecheck + unit tests on every push (Node 24)
-│
-├── app/
-│   └── api/
-│       ├── ai/
-│       │   ├── analyze/route.ts  ← POST: stream Claude analysis for a flag
-│       │   ├── resolve/route.ts  ← POST: accept proposal, write audit trail
-│       │   └── feedback/route.ts ← POST: record 👍/👎 without resolving
-│       └── cron/
-│           ├── weekly-report/route.ts     ← POST: generate + deliver weekly report (CRON_SECRET guarded)
-│           └── generate-turnovers/route.ts ← POST: idempotent nightly turnover creation
 │
 ├── .env.local.example            ← All required env vars documented with comments
 ├── vercel.json                   ← Cron schedules: weekly-report (Mon 08:00 UTC) + turnovers (daily midnight)
