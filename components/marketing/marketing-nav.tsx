@@ -30,6 +30,12 @@ export function MarketingNav() {
         >
           How it works
         </button>
+        <Link
+          href="/dashboard"
+          className="text-slate-300 hover:text-white text-sm transition-colors duration-150" // same visual weight as scroll links
+        >
+          Dashboard
+        </Link>
       </div>
 
       {/* CTA pill */}
