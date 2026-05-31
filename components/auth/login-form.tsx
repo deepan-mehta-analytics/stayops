@@ -147,7 +147,7 @@ export function LoginForm({ next }: LoginFormProps) {
             Reset your password
           </h2>
           <p className="text-slate-500 text-sm mt-1">
-            Enter your email and we'll send a reset link
+            Enter your email and we&apos;ll send a reset link
           </p>
         </div>
 

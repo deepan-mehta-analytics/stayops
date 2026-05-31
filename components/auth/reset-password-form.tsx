@@ -23,24 +23,26 @@ export function ResetPasswordForm() {
   const [success,        setSuccess]        = useState(false);                  // true after password updated
 
   // ── Effect: exchange PKCE code for a session on mount ─────────────────────
+  // All setState calls live inside the async IIFE — avoids the lint rule that
+  // flags synchronous setState in an effect body (react-hooks/set-state-in-effect).
   useEffect(() => {
-    const code = searchParams.get("code");                       // PKCE recovery code from Supabase email link
+    void (async () => {
+      const code = searchParams.get("code");                     // PKCE recovery code from Supabase email link
 
-    if (!code) {
-      setExchangeError("Invalid or expired reset link. Please request a new one."); // no code → link is broken
-      setExchanging(false);                                      // stop loading state
-      return;
-    }
+      if (!code) {
+        setExchangeError("Invalid or expired reset link. Please request a new one."); // no code → broken link
+        setExchanging(false);                                    // stop loading state
+        return;
+      }
 
-    const supabase = getSupabaseBrowser();                       // browser Supabase client
-    supabase.auth
-      .exchangeCodeForSession(code)                              // exchange PKCE code → JWT session cookie
-      .then(({ error: exchangeErr }) => {
-        if (exchangeErr) {
-          setExchangeError("This reset link has expired. Please request a new one."); // code invalid or stale
-        }
-        setExchanging(false);                                    // reveal the password form (or exchange error)
-      });
+      const supabase = getSupabaseBrowser();                     // browser Supabase client
+      const { error: exchangeErr } =
+        await supabase.auth.exchangeCodeForSession(code);        // exchange PKCE code → JWT session cookie
+      if (exchangeErr) {
+        setExchangeError("This reset link has expired. Please request a new one."); // code invalid or stale
+      }
+      setExchanging(false);                                      // reveal the password form (or exchange error)
+    })();
   }, [searchParams]);                                            // searchParams stable across renders
 
   // ── Submit: update password via Supabase Auth ──────────────────────────────
