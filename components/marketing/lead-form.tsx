@@ -5,6 +5,30 @@ import { usePostHog } from "posthog-js/react";                  // PostHog event
 // ── Channel options for multi-select checkboxes ───────────
 const CHANNELS = ["Airbnb", "Booking.com", "MakeMyTrip", "Direct", "Other"] as const;
 
+// ── Per-channel pastel palette: default (idle + hover) and selected states ──
+const CHANNEL_STYLES: Record<typeof CHANNELS[number], { idle: string; selected: string }> = {
+  "Airbnb":      {
+    idle:     "bg-rose-50   border-rose-200   text-rose-600   hover:bg-rose-100   hover:border-rose-400   hover:text-rose-700",
+    selected: "bg-rose-100  border-rose-500   text-rose-800   font-medium",
+  },
+  "Booking.com": {
+    idle:     "bg-sky-50    border-sky-200    text-sky-600    hover:bg-sky-100    hover:border-sky-400    hover:text-sky-700",
+    selected: "bg-sky-100   border-sky-500    text-sky-800    font-medium",
+  },
+  "MakeMyTrip":  {
+    idle:     "bg-amber-50  border-amber-200  text-amber-600  hover:bg-amber-100  hover:border-amber-400  hover:text-amber-700",
+    selected: "bg-amber-100 border-amber-500  text-amber-800  font-medium",
+  },
+  "Direct":      {
+    idle:     "bg-violet-50 border-violet-200 text-violet-600 hover:bg-violet-100 hover:border-violet-400 hover:text-violet-700",
+    selected: "bg-violet-100 border-violet-500 text-violet-800 font-medium",
+  },
+  "Other":       {
+    idle:     "bg-slate-50  border-slate-200  text-slate-500  hover:bg-slate-100  hover:border-slate-400  hover:text-slate-700",
+    selected: "bg-slate-100 border-slate-500  text-slate-700  font-medium",
+  },
+};
+
 // ── Property count options for select ────────────────────
 const PROPERTY_COUNTS = ["1", "2–5", "6–15", "16+"] as const;
 
@@ -193,10 +217,10 @@ export function LeadForm({ utmSource, utmMedium, utmCampaign }: LeadFormProps) {
               <label
                 key={ch}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm cursor-pointer
-                            transition-all duration-150 select-none
+                            transition-all duration-200 select-none
                             ${channels.includes(ch)
-                              ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                              : "border-slate-200 text-slate-600 hover:border-slate-300"
+                              ? CHANNEL_STYLES[ch].selected
+                              : CHANNEL_STYLES[ch].idle
                             }`}
               >
                 <input
