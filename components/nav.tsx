@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";      // shadcn button for consi
 
 // ── Nav link definitions ───────────────────────────────────
 const links = [
-  { href: "/",               label: "Dashboard"      },
-  { href: "/bookings",       label: "Bookings"       },
-  { href: "/reconciliation", label: "Reconciliation" },
-  { href: "/reports",        label: "Reports"        },
+  { href: "/dashboard",      label: "Dashboard"      },   // dashboard moved to /dashboard
+  { href: "/bookings",       label: "Bookings"       },   // unchanged
+  { href: "/reconciliation", label: "Reconciliation" },   // unchanged
+  { href: "/reports",        label: "Reports"        },   // unchanged
 ];
 
 // ── Top navigation bar ────────────────────────────────────
@@ -30,10 +30,7 @@ export function Nav() {
         {/* nav links with active state */}
         <div className="flex items-center gap-1">
           {links.map((link) => {
-            const isActive =
-              link.href === "/"                        // exact match for root only
-                ? pathname === "/"
-                : pathname.startsWith(link.href);     // prefix match for all other routes
+            const isActive = pathname.startsWith(link.href);   // prefix match for all routes
             return (
               <Link
                 key={link.href}

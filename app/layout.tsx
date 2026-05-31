@@ -1,49 +1,36 @@
 import type { Metadata } from "next";                          // Next.js metadata type
-import { Geist, Geist_Mono } from "next/font/google";         // Google font loaders
-import "./globals.css";                                         // global Tailwind styles
-import { Nav } from "@/components/nav";                        // top navigation bar
-import { ThemeProvider } from "@/components/theme-provider";  // next-themes wrapper
+import { Geist, Geist_Mono } from "next/font/google";         // Google font loaders — shared across all route groups
+import "./globals.css";                                         // global Tailwind + tw-animate-css styles
 
-// ── Font setup ────────────────────────────────────────────
+// ── Fonts — defined at root so CSS variables are available everywhere ──
 const geistSans = Geist({
-  variable: "--font-geist-sans",   // CSS variable for body font
-  subsets: ["latin"],              // latin character subset only
+  variable: "--font-geist-sans",   // CSS variable consumed by Tailwind font-sans
+  subsets: ["latin"],              // latin subset only
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",   // CSS variable for monospace font
-  subsets: ["latin"],              // latin character subset only
+  variable: "--font-geist-mono",   // CSS variable for monospace
+  subsets: ["latin"],              // latin subset only
 });
 
-// ── Page metadata ─────────────────────────────────────────
+// ── Root metadata — overridden by each route-group layout ─
 export const metadata: Metadata = {
-  title: "StayOps — Rental Operations Console",                              // browser tab title
-  description: "AI-assisted operations console for short/mid-term rental operators.",  // SEO description
+  title: "StayOps",                                            // fallback tab title
+  description: "STR operations console and growth platform.", // fallback SEO description
 };
 
-// ── Root layout — wraps every page with fonts + nav ───────
+// ── Bare shell — fonts injected; route-group layouts add Nav/ThemeProvider/etc ──
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;   // page content injected by Next.js router
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      suppressHydrationWarning                          /* prevents next-themes class mismatch warning */
+      suppressHydrationWarning                                   // next-themes requires this to avoid hydration mismatch
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"           /* injects "dark" class on <html> */
-          defaultTheme="system"       /* respects OS preference on first load */
-          enableSystem                /* syncs with prefers-color-scheme */
-        >
-          <Nav />                                         {/* persistent top navigation */}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {children}                                    {/* page content rendered here */}
-          </main>
-        </ThemeProvider>
+      <body className="h-full">
+        {children}                                               {/* route-group layouts inject their own wrappers here */}
       </body>
     </html>
   );
