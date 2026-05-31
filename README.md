@@ -4,22 +4,23 @@
 
 Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-### What's live now — v1.2.0
+### What's live now — v2.0.0
 
 - 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
 - 📊 **Live KPI dashboard** — occupancy %, ADR, gross revenue, and upcoming turnovers computed from real Postgres rows via `force-dynamic` server components
 - 🗂️ **SQL reports page** — revenue by channel and property, ADR breakdown, and booking share %
 - 🌙 **Light / dark mode** — system-aware theme toggle (OS preference respected on first load) with the Vega/Green/Blue shadcn preset
+- 🤖 **AI reconciliation agent** — Claude tool-calling reads flagged conflicts, streams reasoning token-by-token, and proposes a resolution with a 0–100 confidence score; operator accepts or dismisses with 👍/👎 feedback
+- ⏰ **Vercel Cron automation** — nightly turnover task generation + weekly AI-generated ops report with optional Slack delivery
 
 ### What's next
 
 | Phase | Version | Features |
 |---|---|---|
-| **Phase 2 — AI Agent** | `v2.0.0` | Claude tool-calling reconciliation agent · weekly AI ops report → Slack · turnover auto-generation via Vercel Cron |
 | **Phase 3 — Growth** | `v3.0.0` | Direct-booking landing page · PostHog funnel · lead capture with UTM attribution |
 
-Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and forthcoming AI layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
+Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and AI agent layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
 ### Multi-channel booking reconciliation engine + AI operations console, built end-to-end with Claude Code on Next.js 16 + Vercel
 
@@ -232,11 +233,13 @@ stayops/
 ├── components/
 │   ├── nav.tsx                   ← Top navigation bar + light/dark toggle
 │   ├── theme-provider.tsx        ← next-themes wrapper (system-aware)
+│   ├── conflict-slide-over.tsx   ← AI analysis panel — idle/streaming/proposal states
+│   ├── reconciliation-client.tsx ← Client boundary: row selection + slide-over wiring
 │   └── ui/
 │       └── button.tsx            ← shadcn Button primitive
 │
 ├── db/
-│   ├── schema.ts                 ← Drizzle schema — all 7 tables, fully typed
+│   ├── schema.ts                 ← Drizzle schema — all 7 tables + Phase 2 audit columns
 │   └── index.ts                  ← Lazy createDb() factory (dotenv-safe)
 │
 ├── scripts/
@@ -245,7 +248,11 @@ stayops/
 │
 ├── lib/
 │   ├── reconciliation.ts         ← Pure classifyBookings() engine + runReconciliation() orchestrator
-│   ├── reconciliation.test.ts    ← Vitest unit tests — 8 fixtures for classifyBookings()
+│   ├── reconciliation.test.ts    ← Vitest — 8 fixtures for classifyBookings()
+│   ├── ai-agent.ts               ← Claude tool-calling agent: tools, system prompt, streamAnalysis(), resolveFlag()
+│   ├── ai-agent.test.ts          ← Vitest — 8 fixtures for agent tools, prompt, resolveFlag()
+│   ├── weekly-report.ts          ← getCurrentIsoWeek(), formatWeeklyReport(), buildWeeklyReport()
+│   ├── weekly-report.test.ts     ← Vitest — 7 fixtures for ISO week + report formatting
 │   ├── dashboard-queries.ts      ← Server-side query functions (KPI metrics, conflict count)
 │   ├── import-pipeline.ts        ← Shared CSV/Sheets parsing and upsert logic
 │   └── utils.ts                  ← cn() utility (clsx + tailwind-merge)
@@ -256,7 +263,18 @@ stayops/
 │   └── workflows/
 │       └── ci.yml                ← GitHub Actions: lint + typecheck + unit tests on every push (Node 24)
 │
+├── app/
+│   └── api/
+│       ├── ai/
+│       │   ├── analyze/route.ts  ← POST: stream Claude analysis for a flag
+│       │   ├── resolve/route.ts  ← POST: accept proposal, write audit trail
+│       │   └── feedback/route.ts ← POST: record 👍/👎 without resolving
+│       └── cron/
+│           ├── weekly-report/route.ts     ← POST: generate + deliver weekly report (CRON_SECRET guarded)
+│           └── generate-turnovers/route.ts ← POST: idempotent nightly turnover creation
+│
 ├── .env.local.example            ← All required env vars documented with comments
+├── vercel.json                   ← Cron schedules: weekly-report (Mon 08:00 UTC) + turnovers (daily midnight)
 ├── drizzle.config.ts             ← Drizzle Kit config pointing to Supabase
 ├── next.config.ts                ← Next.js 16 configuration
 ├── components.json               ← shadcn/ui registry config
@@ -505,9 +523,9 @@ timeline
                : Dollar-value opportunity estimates ✅
                : Vitest unit-test suite (8 tests at ship; 23 today) ✅
     section Phase 2 · AI Agent Layer
-        v2.0.0 : Claude tool-calling reconciliation agent
-               : Weekly AI ops report → Slack
-               : Turnover auto-generation via Cron
+        v2.0.0 : Claude tool-calling reconciliation agent ✅
+               : Weekly AI ops report → Slack ✅
+               : Turnover auto-generation via Cron ✅
     section Phase 3 · Growth Surface
         v3.0.0 : Direct-booking landing page
                : PostHog funnel analytics
