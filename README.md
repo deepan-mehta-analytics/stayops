@@ -138,23 +138,23 @@ Operators spend Sunday evenings firefighting instead of growing their portfolio.
               ┌────────▼──┐ ┌───▼────┐ ┌─▼────┐ ┌▼──────────┐
               │Reconcil-  │ │ KPI    │ │Vercel│ │ Public    │
               │iation     │ │Dash-   │ │Cron  │ │ Landing   │
-              │Engine     │ │board   │ │jobs  │ │ Page      │
-              │rule pass  │ │Tremor  │ │      │ │ (Phase 3) │
+              │Engine     │ │board   │ │jobs  │ │ Page ✅   │
+              │rule pass  │ │shadcn  │ │      │ │ + Banner  │
               └────┬──────┘ └───┬────┘ └──┬───┘ └─────┬─────┘
                    │            │         │             │
               ┌────▼──────┐     │    ┌────▼──────┐ ┌───▼──────┐
               │AI Agent   │     │    │AI weekly  │ │ leads    │
               │Claude     │     │    │report     │ │ table    │
               │tool-call  │     │    │→ Slack    │ │+ PostHog │
-              │(Phase 2)  │     │    │(Phase 2)  │ │(Phase 3) │
               └───────────┘     │    └───────────┘ └──────────┘
                                 │
-                         ┌──────▼──────┐
-                         │ Ops Console │
-                         │ /dashboard  │
-                         │ /flags      │
-                         │ /reports    │
-                         └─────────────┘
+                         ┌──────▼──────────┐
+                         │   Ops Console   │
+                         │ /dashboard      │
+                         │ /reconciliation │
+                         │ /bookings       │
+                         │ /reports        │
+                         └─────────────────┘
 ```
 
 ### Mermaid — Component Graph
@@ -188,7 +188,7 @@ flowchart TB
     subgraph UI["📊 Next.js 16 — App Router"]
         Q["KPI Dashboard\noccupancy · ADR · revenue"]
         R["Reconciliation\nFlags View"]
-        S["Public Landing Page\nLead Capture — Phase 3"]
+        S["Public Landing Page\nBanner · PostHog · Lead Capture ✅"]
     end
 
     Sources --> E --> G
@@ -212,7 +212,7 @@ flowchart TB
 | `/api/import/csv` — CSV booking ingestion | Ingestion | ✅ Done |
 | `/api/import/sheets` — Google Sheets import | Ingestion | ✅ Done |
 | Reconciliation engine — 4 rule types | Operations | ✅ Done |
-| `/` — KPI dashboard (occupancy · ADR · revenue) | Frontend | ✅ Done |
+| `/dashboard` — KPI dashboard (occupancy · ADR · revenue) | Frontend | ✅ Done |
 | `/reconciliation` — flags view with badge types | Frontend | ✅ Done |
 | `/reports` — SQL revenue + ADR breakdown | Frontend | ✅ Done |
 | `components/theme-provider.tsx` — next-themes wrapper | UI | ✅ Done |
