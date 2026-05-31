@@ -7,7 +7,7 @@ import { useEffect } from "react";                             // init side effe
 function PostHogInit() {
   useEffect(() => {
     posthog.init(                                              // initialise with project API key
-      process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "",              // env var set in Vercel + .env.local
+      process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN ?? "",     // env var set in Vercel + .env.local
       {
         api_host:         process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com", // US ingest endpoint (current recommended host)
         defaults:         "2026-01-30",                       // opt into PostHog default settings as of this date
