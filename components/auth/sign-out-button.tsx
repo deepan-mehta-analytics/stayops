@@ -23,7 +23,7 @@ export function SignOutButton({ className }: { className?: string }) {
       className={className}                                     // forwarded so nav can set colour on dark bg
       onClick={handleSignOut}
     >
-      <LogOut className="h-5 w-5" />                           {/* door-with-arrow logout icon — h-5 matches text-base nav link scale */}
+      <LogOut className="h-6 w-6" />                           {/* door-with-arrow logout icon — h-6 for clear visibility in dark nav */}
     </Button>
   );
 }
