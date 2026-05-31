@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# internal planning artifacts (specs, plans) — not for public repo
+.superpowers/
+docs/superpowers/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
