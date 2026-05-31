@@ -2,6 +2,7 @@
 "use client";                                                            // client component — manages stream state
 
 import { useState } from "react";                                        // local state hook
+import { Sparkles } from "lucide-react";                                 // empty-state icon
 
 // ── Types ─────────────────────────────────────────────────
 type PanelState = "idle" | "streaming" | "proposal";                    // three states of the AI panel
@@ -41,9 +42,38 @@ export default function ConflictSlideOver({ flag, onClose, onResolved }: Conflic
     reasoningSummary: string;                                            // brief reasoning
   } | null>(null);
 
-  if (!flag) return null;                                                // closed — render nothing
+  // ── Glassmorphism inline styles (shared across all states) ──
+  const panelStyle: React.CSSProperties = {
+    background:     "rgba(255, 255, 255, 0.92)",                        // translucent white
+    backdropFilter: "blur(16px)",                                        // frosted glass blur
+    borderLeft:     "1px solid rgba(124, 58, 237, 0.25)",               // subtle violet left border
+    boxShadow:      "-4px 0 24px rgba(0, 0, 0, 0.10)",                  // leftward shadow
+  };
 
-  const currentFlag = flag;                                              // non-nullable alias — TypeScript can't narrow across async boundaries
+  // ── Empty state — no flag selected yet ────────────────
+  if (!flag) {
+    return (
+      <div
+        className="w-80 flex-shrink-0 flex flex-col p-4 gap-3 rounded-r-lg"
+        style={panelStyle}
+      >
+        <p className="text-xs font-bold text-violet-700 uppercase tracking-widest">✦ AI Analysis</p>
+        <div className="flex flex-col items-center justify-center gap-4 py-10 text-center">
+          <div className="w-12 h-12 rounded-full bg-violet-50 border border-violet-200 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-violet-400" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold text-zinc-700">No conflict selected</p>
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Click <span className="font-semibold text-violet-600">⚡ Analyze</span> on any conflict row to run Claude AI analysis on that booking conflict.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentFlag = flag;                                              // non-nullable alias after guard
 
   // ── Start streaming analysis ───────────────────────────
   async function handleAnalyze() {
@@ -111,15 +141,6 @@ export default function ConflictSlideOver({ flag, onClose, onResolved }: Conflic
     });
     onClose();                                                           // close without resolving
   }
-
-  // ── Glassmorphism inline styles ────────────────────────
-  // Tailwind cannot express arbitrary rgba values — inline styles required.
-  const panelStyle: React.CSSProperties = {
-    background:     "rgba(255, 255, 255, 0.92)",                        // translucent white
-    backdropFilter: "blur(16px)",                                        // frosted glass blur
-    borderLeft:     "1px solid rgba(124, 58, 237, 0.25)",               // subtle violet left border
-    boxShadow:      "-4px 0 24px rgba(0, 0, 0, 0.10)",                  // leftward shadow
-  };
 
   return (
     <div
