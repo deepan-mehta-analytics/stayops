@@ -36,9 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
-# internal planning artifacts (specs, plans) — not for public repo
+# internal planning and status artifacts — not for public repo
 .superpowers/
 docs/superpowers/
+PROJECT-STATUS.md
+StayOps_PROJECT-PLAN.md
 
 # typescript
 *.tsbuildinfo
