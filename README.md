@@ -324,7 +324,8 @@ Open `.env.local` and fill in the required variables:
 | `ANTHROPIC_API_KEY` | Phase 2 (AI agent) | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 | `SLACK_WEBHOOK_URL` | Phase 2 (reports) | api.slack.com → Apps → Incoming Webhooks |
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Phase 1 (Sheets) | GCP Console → IAM → Service Accounts → JSON key |
-| `NEXT_PUBLIC_POSTHOG_KEY` | Phase 3 (analytics) | app.posthog.com → Project Settings |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Phase 3 (analytics) | us.posthog.com → Project Settings |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Phase 3 (analytics) | `https://us.i.posthog.com` (or eu.i for EU accounts) |
 
 #### 4. Run database migrations
 
@@ -501,7 +502,7 @@ Phase 2 shipped (v2.0.0). `ANTHROPIC_API_KEY` is configured in Vercel and the AI
 - **Gap flag classification** — 1-night "orphan" windows between stays are detected but shown only as a footnote count (typically unsellable under a 2-night minimum). 2–3 night gaps are shown as revenue Opportunities with a `$` estimate. 4+ night gaps are treated as intentional vacancy and not flagged.
 - **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running the seed script locally
 - **Phase 2 AI features require `ANTHROPIC_API_KEY` in `.env.local` for local development** — the key is configured in Vercel production; copy `.env.local.example` and add the key to run the agent locally
-- **Phase 3 analytics require `NEXT_PUBLIC_POSTHOG_KEY`** — PostHog funnel tracking is wired up in the schema but the capture calls are Phase 3 work
+- **Phase 3 analytics require `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST`** — configured in Vercel production; add to `.env.local` for local funnel testing
 
 ## 🔜 Roadmap
 
@@ -527,7 +528,7 @@ timeline
                : 14 GitHub repo topics ✅
         v1.2.0 : Conflicts vs Opportunities UI split ✅
                : Dollar-value opportunity estimates ✅
-               : Vitest unit-test suite (8 tests at ship; 23 today) ✅
+               : Vitest unit-test suite (8 tests at ship; 27 today) ✅
     section Phase 2 · AI Agent Layer
         v2.0.0 : Claude tool-calling reconciliation agent ✅
                : Weekly AI ops report → Slack ✅
