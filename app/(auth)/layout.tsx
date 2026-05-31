@@ -13,11 +13,11 @@ const poppins = Poppins({
 export default function AuthLayout({
   children,
 }: {
-  children: React.ReactNode;                                   // login form and wordmark
+  children: React.ReactNode;                                   // login, reset-password, and any future auth pages
 }) {
   return (
-    // Full-viewport centred column on light slate background
-    <div className={`${poppins.variable} min-h-screen bg-slate-50 flex items-center justify-center px-4`}>
+    // Apply Poppins CSS variable and base background — pages manage their own layout
+    <div className={`${poppins.variable} min-h-screen bg-slate-50`}>
       {children}
     </div>
   );

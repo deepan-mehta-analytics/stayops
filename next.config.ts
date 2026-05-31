@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  allowedDevOrigins: ["host.docker.internal"],              // allow Docker MCP browser to load JS bundles in dev
 };
 
 export default nextConfig;
