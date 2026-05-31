@@ -19,7 +19,7 @@ Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and 
 
 | Phase | Version | Features |
 |---|---|---|
-| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme · admin auth · Playwright E2E · README screenshots |
+| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme · Playwright E2E · README screenshots |
 
 Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and AI agent layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
@@ -66,10 +66,10 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 
 - **Direct-booking growth surface** — public landing page with AI-generated property banner, PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution), 6 review cards with modal, animated metrics strip, and lead capture form
 
-**In progress (Phase 4 — portfolio polish):**
+**Partially implemented (Phase 4 — in progress):**
 
+- **Multi-user authentication** ✅ — Supabase Auth (email/password); `/login` page with full-width property banner, inline forgot-password toggle, PKCE reset-password flow; `proxy.ts` middleware guards all `/dashboard`, `/bookings`, `/reconciliation`, `/reports` routes; sign-out button in the ops console nav
 - **Dashboard theme alignment** — ops console visual identity matched to landing page brand
-- **Admin authentication** — middleware-protected ops console with login page
 - **Playwright E2E** — full end-to-end test suite against live Vercel deployment
 - **README screenshots** — auto-captured from live pages
 
@@ -222,7 +222,7 @@ flowchart TB
 | Public landing page + PostHog funnel | Growth | ✅ Done |
 | Lead capture → `leads` table + UTM attribution | Growth | ✅ Done |
 | AI-generated property banner (Gemini triptych) | Growth | ✅ Done |
-| Admin authentication + protected ops console | Security | 🔄 Phase 4 |
+| Admin authentication + protected ops console | Security | ✅ Done |
 | Dashboard theme — brand alignment | UI | 🔄 Phase 4 |
 | Playwright E2E test suite | Testing | 🔄 Phase 4 |
 
@@ -237,9 +237,15 @@ This project is developed with **Claude Code as the primary coding agent** — e
 ```
 stayops/
 │
+├── proxy.ts                      ← Edge proxy — session refresh + route guard (renamed from middleware.ts per Next.js 16)
+│
 ├── app/                          ← Next.js 16 App Router root
 │   ├── layout.tsx                ← Bare HTML shell — fonts + globals only
 │   ├── globals.css               ← Tailwind base + CSS variables (Vega/Green/Blue preset)
+│   ├── (auth)/                   ← Route group — login + password reset (no nav, Poppins)
+│   │   ├── layout.tsx            ← Auth layout — Poppins font, full-page (no centering)
+│   │   ├── login/page.tsx        ← Login page — property banner top, card below, homepage link
+│   │   └── reset-password/page.tsx ← Password reset — exchanges PKCE code, new password form
 │   ├── (marketing)/              ← Route group — landing page (light, Poppins, PostHog)
 │   │   ├── layout.tsx            ← Marketing layout — Poppins font, OG metadata
 │   │   └── page.tsx              ← Landing page — banner + hero + sections + lead form
@@ -248,12 +254,16 @@ stayops/
 │       └── dashboard/page.tsx    ← KPI dashboard (moved from root)
 │
 ├── components/
-│   ├── nav.tsx                   ← Ops console nav — Dashboard/Bookings/Reconciliation/Reports
+│   ├── nav.tsx                   ← Ops console nav — Dashboard/Bookings/Reconciliation/Reports + sign-out
 │   ├── theme-provider.tsx        ← next-themes wrapper (system-aware)
 │   ├── conflict-slide-over.tsx   ← AI analysis panel — idle/streaming/proposal states
 │   ├── reconciliation-client.tsx ← Client boundary: row selection + slide-over wiring
+│   ├── auth/                     ← Auth components (Phase 4)
+│   │   ├── login-form.tsx        ← Sign-in + inline forgot-password toggle (3 modes)
+│   │   ├── reset-password-form.tsx ← PKCE code exchange + new password form
+│   │   └── sign-out-button.tsx   ← Ghost icon button — calls signOut(), redirects to /
 │   ├── marketing/                ← Landing page components (Phase 3)
-│   │   ├── marketing-nav.tsx     ← Sticky transparent nav — Features / How it works / Request Demo
+│   │   ├── marketing-nav.tsx     ← Sticky transparent nav — Features / How it works / Dashboard / CTA
 │   │   ├── property-banner.tsx   ← Full-bleed AI-generated triptych banner (Gemini)
 │   │   ├── hero.tsx              ← Dark gradient hero — headline + screenshot card + CTAs
 │   │   ├── metrics-strip.tsx     ← Animated counter strip (IntersectionObserver count-up)
@@ -282,7 +292,11 @@ stayops/
 │   ├── weekly-report.test.ts     ← Vitest — 7 fixtures for ISO week + report formatting
 │   ├── dashboard-queries.ts      ← Server-side query functions (KPI metrics, conflict count)
 │   ├── import-pipeline.ts        ← Shared CSV/Sheets parsing and upsert logic
-│   └── utils.ts                  ← cn() utility (clsx + tailwind-merge)
+│   ├── leads-api.test.ts         ← Vitest — 4 fixtures for POST /api/leads (honeypot, validation, insert)
+│   ├── utils.ts                  ← cn() utility (clsx + tailwind-merge)
+│   └── supabase/
+│       ├── server.ts             ← createServerClient() wrapper — async cookie store, Server Components
+│       └── browser.ts            ← createBrowserClient() wrapper — Client Components + event handlers
 │
 ├── public/                       ← Static assets
 │   └── banner-properties.png     ← AI-generated STR triptych (Gemini — beach/mountain/city)
@@ -527,7 +541,7 @@ Phase 2 shipped (v2.0.0). `ANTHROPIC_API_KEY` is configured in Vercel and the AI
 
 ## ⚠️ Known Limitations
 
-- **No auth / multi-user support** — single-operator demo mode only; Row-Level Security policies and user management are post-MVP scope
+- **Auth is single-tenant** — Supabase Auth (email/password) is implemented and middleware-protected; all ops console routes require sign-in. Self-signup, per-user Row-Level Security data isolation, and multi-tenant user management are post-MVP scope
 - **No real channel APIs** — Airbnb has no public API; Booking.com requires enterprise access. CSV and Google Sheets import is the realistic operator workflow, matching how operators actually export their booking data
 - **Gap flag classification** — 1-night "orphan" windows between stays are detected but shown only as a footnote count (typically unsellable under a 2-night minimum). 2–3 night gaps are shown as revenue Opportunities with a `$` estimate. 4+ night gaps are treated as intentional vacancy and not flagged.
 - **`npm run seed` requires `DATABASE_URL`** — copy `.env.local.example` to `.env.local` and add Supabase credentials before running the seed script locally
