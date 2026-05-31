@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/weekly-report",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/generate-turnovers",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
