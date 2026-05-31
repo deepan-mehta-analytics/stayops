@@ -10,7 +10,7 @@ Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and 
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
 - 📊 **Live KPI dashboard** — occupancy %, ADR, gross revenue, and upcoming turnovers computed from real Postgres rows via `force-dynamic` server components
 - 🗂️ **SQL reports page** — revenue by channel and property, ADR breakdown, and booking share %
-- 🌙 **Light / dark mode** — system-aware theme toggle (OS preference respected on first load) with the Vega/Green/Blue shadcn preset
+- 🎨 **Unified visual identity** — Theme F ops console: navy `#0f172a` nav, mint `#00e5a0` accent, Poppins typography, always-light `#f1f5f9` content area matching the marketing landing page brand
 - 🤖 **AI reconciliation agent** — Claude tool-calling reads flagged conflicts, streams reasoning token-by-token, and proposes a resolution with a 0–100 confidence score; operator accepts or dismisses with 👍/👎 feedback
 - ⏰ **Vercel Cron automation** — nightly turnover task generation + weekly AI-generated ops report with optional Slack delivery
 - 🌐 **Public landing page** — full-width AI-generated property banner, hero section, animated metrics strip, 6-feature grid, PostHog funnel tracking, and lead capture form with UTM attribution into the `leads` table
@@ -52,7 +52,7 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 - **Rule-based reconciliation engine** — detects four conflict types (duplicate bookings, double-bookings, pricing anomalies, upsell gaps) and writes structured `reconciliation_flags` with plain-English reasons
 - **KPI dashboard** — occupancy %, average daily rate (ADR), gross revenue, and upcoming turnovers computed from live Postgres rows via server components
 - **SQL reports page** — revenue by channel and property, ADR breakdown, booking share %
-- **Light / dark mode** — system-aware theme toggle with the Vega/Green/Blue shadcn preset (next-themes)
+- **Ops console visual identity** — navy/mint Theme F (always-light); Vega/Green/Blue shadcn CSS variable preset; Poppins font via `next/font/google`
 - **7-table Drizzle schema** — typed, SQL-first ORM schema covering the full operational data model (properties, channels, bookings, reconciliation flags, turnover tasks, leads, reports)
 - **Synthetic demo dataset** — seed script plants exactly 8 conflict events (2 per type) against a realistic backdrop of ~70 clean bookings, with dates computed relative to today so the demo always has live upcoming turnovers
 
@@ -85,7 +85,7 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 | ORM | Drizzle ORM | SQL-first, fully typed; keeps queries readable rather than hidden |
 | Validation | Zod 4 | Runtime schema validation on all API boundaries |
 | UI Components | shadcn/ui + Tailwind CSS 4 | Accessible component primitives; Vega style with Green/Blue preset |
-| Theme | next-themes | System-aware light / dark mode; class injection on `<html>` |
+| Theme | next-themes + Poppins | Always-light ops console (Theme F: navy/mint); class injection on `<html>` |
 | AI Agent | Anthropic SDK (`claude-sonnet-4-6`) | Tool-calling reconciliation agent + report generation (Phase 2) |
 | Analytics | PostHog | Funnel events, session capture, conversion tracking (Phase 3) |
 | Sheets Integration | Google Sheets API (service account) | Booking import/export — a real operator workflow |
@@ -223,7 +223,7 @@ flowchart TB
 | Lead capture → `leads` table + UTM attribution | Growth | ✅ Done |
 | AI-generated property banner (Gemini triptych) | Growth | ✅ Done |
 | Admin authentication + protected ops console | Security | ✅ Done |
-| Dashboard theme — brand alignment | UI | 🔄 Phase 4 |
+| Dashboard Theme F — navy/mint/Poppins, always-light ops console | UI | ✅ Done |
 | Playwright E2E test suite | Testing | 🔄 Phase 4 |
 
 ### Built With AI (Claude Code)
@@ -249,9 +249,14 @@ stayops/
 │   ├── (marketing)/              ← Route group — landing page (light, Poppins, PostHog)
 │   │   ├── layout.tsx            ← Marketing layout — Poppins font, OG metadata
 │   │   └── page.tsx              ← Landing page — banner + hero + sections + lead form
-│   ├── (app)/                    ← Route group — ops console (theme toggle, nav)
-│   │   ├── layout.tsx            ← App layout — ThemeProvider + Nav wrapper
-│   │   └── dashboard/page.tsx    ← KPI dashboard (moved from root)
+│   ├── (app)/                    ← Route group — ops console (Theme F: always-light, navy/mint nav)
+│   │   ├── layout.tsx            ← App layout — ThemeProvider (always-light) + Poppins + Nav wrapper
+│   │   ├── dashboard/page.tsx    ← KPI dashboard — occupancy · ADR · revenue · conflicts
+│   │   ├── bookings/
+│   │   │   ├── page.tsx          ← Bookings list — all confirmed bookings across channels
+│   │   │   └── import-form.tsx   ← CSV import client form
+│   │   ├── reconciliation/page.tsx ← Conflict flags + always-visible AI analysis panel
+│   │   └── reports/page.tsx      ← Revenue by channel + property SQL reports
 │   └── api/
 │       ├── ai/
 │       │   ├── analyze/route.ts  ← POST: stream Claude analysis for a flag
@@ -366,7 +371,7 @@ Open `.env.local` and fill in the required variables:
 | `ANTHROPIC_API_KEY` | Phase 2 (AI agent) | [console.anthropic.com](https://console.anthropic.com) → API Keys |
 | `SLACK_WEBHOOK_URL` | Phase 2 (reports) | api.slack.com → Apps → Incoming Webhooks |
 | `GOOGLE_SERVICE_ACCOUNT_JSON` | Phase 1 (Sheets) | GCP Console → IAM → Service Accounts → JSON key |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Phase 3 (analytics) | us.posthog.com → Project Settings |
+| `NEXT_PUBLIC_POSTHOG_KEY` | Phase 3 (analytics) | us.posthog.com → Project Settings → Project API key |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Phase 3 (analytics) | `https://us.i.posthog.com` (or eu.i for EU accounts) |
 
 #### 4. Run database migrations
