@@ -384,7 +384,7 @@ The app is deployed and publicly accessible at:
 | `npm run build` | Production build |
 | `npm run lint` | ESLint across all TypeScript files |
 | `npx tsc --noEmit` | TypeScript typecheck (no output files) |
-| `npm test` | Run Vitest unit suite (23 tests — reconciliation, AI agent, weekly report) |
+| `npm test` | Run Vitest unit suite (27 tests — reconciliation, AI agent, weekly report, leads API) |
 | `npm run seed` | Truncate all tables and repopulate with demo data |
 | `npm run reset:flags` | Clear `reconciliation_flags` so engine re-classifies on next `/reconciliation` load |
 | `npm run db:generate` | Generate SQL migration files from `db/schema.ts` |
@@ -401,7 +401,7 @@ The app is deployed and publicly accessible at:
 |---|---|---|
 | Lint | ESLint (`eslint-config-next`) | Every push to `main` via CI |
 | Type check | TypeScript `tsc --noEmit` | Every push to `main` via CI |
-| Unit tests | Vitest — 3 test files, 23 tests | Every push to `main` via CI |
+| Unit tests | Vitest — 4 test files, 27 tests | Every push to `main` via CI |
 
 CI runs on Node 24 with two parallel jobs (Lint & Typecheck + Unit Tests). All runs green on `main`.
 
@@ -409,10 +409,10 @@ CI runs on Node 24 with two parallel jobs (Lint & Typecheck + Unit Tests). All r
 # Run locally
 npm run lint
 npx tsc --noEmit
-npm test                   # vitest run — 23 unit tests
+npm test                   # vitest run — 27 unit tests
 ```
 
-**Unit test coverage** — 23 tests across 3 modules:
+**Unit test coverage** — 27 tests across 4 modules:
 
 Phase 1 — `classifyBookings()` pure function, 8 fixtures:
 - `double_book` detection for overlapping guests on the same property
@@ -433,6 +433,12 @@ Phase 2 — `lib/ai-agent.ts`, 8 fixtures:
 Phase 2 — `lib/weekly-report.ts`, 7 fixtures:
 - `getCurrentIsoWeek()` format (`YYYY-Www`) and year-boundary correctness
 - `formatWeeklyReport()` renders conflict count, revenue, top property, null-property fallback
+
+Phase 3 — `lib/leads-api.test.ts`, 4 fixtures:
+- Valid email → 201 + DB insert
+- Honeypot filled → 200, no insert (silent bot reject)
+- Invalid email → 400, no insert
+- Optional fields (propertyCount, channelsUsed, message) passed through correctly
 
 ### Roadmap — Integration and E2E Tests
 
@@ -527,10 +533,9 @@ timeline
                : Weekly AI ops report → Slack ✅
                : Turnover auto-generation via Cron ✅
     section Phase 3 · Growth Surface
-        v3.0.0 : Direct-booking landing page
-               : PostHog funnel analytics
-               : Lead capture + UTM attribution
-               : AI-generated listing copy
+        v3.0.0 : Direct-booking landing page ✅
+               : PostHog funnel analytics ✅
+               : Lead capture + UTM attribution ✅
 ```
 
 ### Version Checklist
@@ -543,7 +548,7 @@ timeline
 | `v1.1.0` | Vega/Green/Blue theme + light/dark mode + 14 repo topics | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.1.0) |
 | `v1.2.0` | Conflicts/Opportunities UI split + dollar estimates + Vitest suite (8 tests at ship, CI) | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.2.0) |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v2.0.0) |
-| `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
+| `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v3.0.0) |
 
 ---
 
