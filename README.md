@@ -203,9 +203,9 @@ flowchart TB
 | `/reconciliation` — flags view with badge types | Frontend | ✅ Done |
 | `/reports` — SQL revenue + ADR breakdown | Frontend | ✅ Done |
 | `components/theme-provider.tsx` — next-themes wrapper | UI | ✅ Done |
-| AI reconciliation agent (Claude tool-calling) | AI layer | ⏳ Phase 2 |
-| Vercel Cron — nightly reconcile + weekly report | Automation | ⏳ Phase 2 |
-| Weekly AI report → Slack webhook | Automation | ⏳ Phase 2 |
+| AI reconciliation agent (Claude tool-calling) | AI layer | ✅ Done |
+| Vercel Cron — nightly reconcile + weekly report | Automation | ✅ Done |
+| Weekly AI report → Slack webhook | Automation | ✅ Done |
 | Public landing page + PostHog funnel | Growth | ⏳ Phase 3 |
 | Lead capture → `leads` table + UTM attribution | Growth | ⏳ Phase 3 |
 
@@ -362,7 +362,7 @@ The app is deployed and publicly accessible at:
 | `npm run build` | Production build |
 | `npm run lint` | ESLint across all TypeScript files |
 | `npx tsc --noEmit` | TypeScript typecheck (no output files) |
-| `npm test` | Run Vitest unit suite (8 tests — `classifyBookings()`) |
+| `npm test` | Run Vitest unit suite (23 tests — reconciliation, AI agent, weekly report) |
 | `npm run seed` | Truncate all tables and repopulate with demo data |
 | `npm run reset:flags` | Clear `reconciliation_flags` so engine re-classifies on next `/reconciliation` load |
 | `npm run db:generate` | Generate SQL migration files from `db/schema.ts` |
@@ -373,13 +373,13 @@ The app is deployed and publicly accessible at:
 
 ## 🧪 Tests
 
-### Current Coverage — Phase 1
+### Current Coverage — Phase 1 + Phase 2
 
 | Check | Tool | Runs on |
 |---|---|---|
 | Lint | ESLint (`eslint-config-next`) | Every push to `main` via CI |
 | Type check | TypeScript `tsc --noEmit` | Every push to `main` via CI |
-| Unit tests | Vitest — `lib/reconciliation.test.ts` | Every push to `main` via CI |
+| Unit tests | Vitest — 3 test files, 23 tests | Every push to `main` via CI |
 
 CI runs on Node 24 with two parallel jobs (Lint & Typecheck + Unit Tests). All runs green on `main`.
 
@@ -387,11 +387,12 @@ CI runs on Node 24 with two parallel jobs (Lint & Typecheck + Unit Tests). All r
 # Run locally
 npm run lint
 npx tsc --noEmit
-npm test                   # vitest run — 8 unit tests
+npm test                   # vitest run — 23 unit tests
 ```
 
-**Unit test coverage** — `classifyBookings()` pure function, 8 fixtures:
+**Unit test coverage** — 23 tests across 3 modules:
 
+Phase 1 — `classifyBookings()` pure function, 8 fixtures:
 - `double_book` detection for overlapping guests on the same property
 - `duplicate` detection from two channels (different `sourceRowHash`)
 - `orphan_night` for 1-night unsellable gaps (no `estimatedValue`)
@@ -400,6 +401,16 @@ npm test                   # vitest run — 8 unit tests
 - Multi-property numeric sum guard (Drizzle returns `numeric` as JS strings)
 - `price_mismatch` detection for >25% rate deviation
 - Back-to-back clean bookings → zero flags
+
+Phase 2 — `lib/ai-agent.ts`, 8 fixtures:
+- Tool schema shape and required fields on `propose_resolution`
+- `CHANNEL_PRIORITY` ordering (Airbnb first)
+- System prompt structure and channel-priority interpolation
+- `resolveFlag()` DB write sequence
+
+Phase 2 — `lib/weekly-report.ts`, 7 fixtures:
+- `getCurrentIsoWeek()` format (`YYYY-Www`) and year-boundary correctness
+- `formatWeeklyReport()` renders conflict count, revenue, top property, null-property fallback
 
 ### Roadmap — Integration and E2E Tests
 
@@ -449,9 +460,9 @@ End-to-end results against the live Supabase seed dataset:
 
 The gap flag count is intentionally high: the seed's 1-day buffer between consecutive clean bookings is itself a gap, and the engine flags every unsold night between confirmed stays — matching real operator behaviour.
 
-### Phase 2 — AI Agent Metrics _(pending)_
+### Phase 2 — AI Agent
 
-Claude tool-calling agent benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded here once Phase 2 is built.
+Phase 2 shipped (v2.0.0). Runtime benchmarks (resolution accuracy, reasoning trace quality, average tokens per flag) will be recorded once `ANTHROPIC_API_KEY` is configured in Vercel and the feature flag is enabled.
 
 ---
 
@@ -488,7 +499,7 @@ timeline
                : 14 GitHub repo topics ✅
         v1.2.0 : Conflicts vs Opportunities UI split ✅
                : Dollar-value opportunity estimates ✅
-               : Vitest unit-test suite (8 tests, CI-enforced) ✅
+               : Vitest unit-test suite (8 tests at ship; 23 today) ✅
     section Phase 2 · AI Agent Layer
         v2.0.0 : Claude tool-calling reconciliation agent
                : Weekly AI ops report → Slack
@@ -508,8 +519,8 @@ timeline
 | `v0.2.0` | Phase 0 complete — Supabase connected, seed running, demo data live | ✅ Done |
 | `v1.0.0` | **MVP** — CSV/Sheets import + reconciliation engine + KPI dashboard | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.0.0) |
 | `v1.1.0` | Vega/Green/Blue theme + light/dark mode + 14 repo topics | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.1.0) |
-| `v1.2.0` | Conflicts/Opportunities UI split + dollar estimates + Vitest suite (8 tests, CI) | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.2.0) |
-| `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ⏳ Pending |
+| `v1.2.0` | Conflicts/Opportunities UI split + dollar estimates + Vitest suite (8 tests at ship, CI) | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.2.0) |
+| `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ✅ Done |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ⏳ Pending |
 
 ---
