@@ -32,10 +32,10 @@ export function Hero({ utmSource, utmMedium, utmCampaign }: HeroProps) {
             AI-powered ops — now in early access
           </span>
 
-          {/* Main headline */}
-          <h1 className="font-[family-name:var(--font-poppins)] font-extrabold text-5xl lg:text-7xl leading-tight text-white">
-            Reconcile Every Booking.{" "}
-            <span className="text-emerald-400">Resolve Every Conflict.</span>
+          {/* Main headline — each phrase forced to its own line */}
+          <h1 className="font-[family-name:var(--font-poppins)] font-extrabold text-4xl sm:text-5xl leading-tight text-white">
+            <span className="block">Reconcile Every Booking.</span>
+            <span className="block text-emerald-400">Resolve Every Conflict.</span>
           </h1>
 
           {/* Subheadline */}
