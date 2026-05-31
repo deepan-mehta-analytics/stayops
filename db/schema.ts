@@ -91,6 +91,8 @@ export const leads = pgTable("leads", {
   contact:        varchar("contact", { length: 200 }),                          // email or phone from enquiry form
   message:        text("message"),                                               // enquiry message body
   posthogSession: varchar("posthog_session", { length: 200 }),                  // PostHog session ID for funnel join
+  propertyCount:  varchar("property_count", { length: 20 }),                     // "1" | "2-5" | "6-15" | "16+"
+  channelsUsed:   varchar("channels_used", { length: 500 }),                     // comma-separated: "airbnb,booking,direct"
   createdAt:      timestamp("created_at").defaultNow().notNull(),                // lead capture timestamp
 });
 
