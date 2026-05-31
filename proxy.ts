@@ -9,7 +9,7 @@ import { NextResponse, type NextRequest }  from "next/server";                 /
 // ── Routes that require authentication ───────────────────────────────────────
 const PROTECTED_PREFIXES = ["/dashboard", "/bookings", "/reconciliation", "/reports"]; // all (app) route paths
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });                                // default: pass through unchanged
 
   // ── Build a Supabase client wired to the edge request/response cookies ────
