@@ -82,17 +82,17 @@ export default async function DashboardPage() {
         ) : (
           <div className="rounded-lg border border-zinc-200 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-50 ">
+              <thead className="bg-slate-100">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
-                  <th className="px-4 py-3 text-right font-medium text-zinc-500">Revenue</th>
-                  <th className="px-4 py-3 text-right font-medium text-zinc-500">Nights</th>
-                  <th className="px-4 py-3 text-right font-medium text-zinc-500">ADR</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-700">Revenue</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-700">Nights</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 ">
+              <tbody className="divide-y divide-zinc-100">
                 {byProperty.map((row) => (
-                  <tr key={row.name} className="hover:bg-zinc-50 ">
+                  <tr key={row.name} className="even:bg-slate-50 hover:bg-zinc-100">
                     <td className="px-4 py-3 font-medium">{row.name}</td>
                     <td className="px-4 py-3 text-right">${row.revenue.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">{row.nights}</td>
@@ -113,17 +113,17 @@ export default async function DashboardPage() {
         ) : (
           <div className="rounded-lg border border-zinc-200 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-50 ">
+              <thead className="bg-slate-100">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
-                  <th className="px-4 py-3 text-left font-medium text-zinc-500">Guest</th>
-                  <th className="px-4 py-3 text-left font-medium text-zinc-500">Check-out</th>
-                  <th className="px-4 py-3 text-left font-medium text-zinc-500">Channel</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-700">Guest</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-700">Check-out</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 ">
+              <tbody className="divide-y divide-zinc-100">
                 {turnovers.map((t) => (
-                  <tr key={t.id} className="hover:bg-zinc-50 ">
+                  <tr key={t.id} className="even:bg-slate-50 hover:bg-zinc-100">
                     <td className="px-4 py-3 font-medium">{t.propertyName}</td>
                     <td className="px-4 py-3">{t.guestName}</td>
                     <td className="px-4 py-3">{t.checkOut}</td>

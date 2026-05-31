@@ -81,13 +81,13 @@ export default function ReconciliationClient({
           ) : (
             <div className="rounded-lg border border-zinc-200 overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-zinc-50">
+                <thead className="bg-slate-100">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Type</th>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Reason</th>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Status</th>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Detected</th>
-                    <th className="px-4 py-3 text-left font-medium text-violet-500">AI</th>  {/* analyze column */}
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Type</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Reason</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Status</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Detected</th>
+                    <th className="px-4 py-3 text-left font-semibold text-violet-600">AI</th>  {/* analyze column */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100">
@@ -100,7 +100,7 @@ export default function ReconciliationClient({
                         className={`cursor-pointer transition-colors ${
                           isSelected
                             ? "bg-violet-50"                            // violet tint when selected
-                            : "hover:bg-zinc-50"
+                            : "even:bg-slate-50 hover:bg-zinc-100"      // alternating band + hover
                         }`}
                       >
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -125,11 +125,11 @@ export default function ReconciliationClient({
                             onClick={(e) => { e.stopPropagation(); selectFlag(flag); }}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${
                               isSelected
-                                ? "bg-violet-600 text-white"                               // selected: filled violet
-                                : "bg-violet-50 border border-violet-200 text-violet-600 hover:bg-violet-100 hover:border-violet-400"  // idle: ghost violet
+                                ? "bg-violet-600 text-white"                                       // selected: filled violet
+                                : "bg-white border border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-400"  // idle: white bg so Zap amber shows
                             }`}
                           >
-                            <Zap className="w-3 h-3" />
+                            <Zap className={`w-3 h-3 ${isSelected ? "text-white" : "text-amber-500"}`} />
                             {isSelected ? "Selected" : "Analyze"}
                           </button>
                         </td>
@@ -152,17 +152,17 @@ export default function ReconciliationClient({
           ) : (
             <div className="rounded-lg border border-zinc-200 overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-zinc-50">
+                <thead className="bg-slate-100">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Window</th>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Detail</th>
-                    <th className="px-4 py-3 text-right font-medium text-zinc-500">Recoverable</th>
-                    <th className="px-4 py-3 text-left font-medium text-zinc-500">Detected</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Window</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Detail</th>
+                    <th className="px-4 py-3 text-right font-semibold text-zinc-700">Recoverable</th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-700">Detected</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100">
                   {opportunities.map((flag) => (
-                    <tr key={flag.id} className="hover:bg-zinc-50">
+                    <tr key={flag.id} className="even:bg-slate-50 hover:bg-zinc-100">
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_STYLES.gap}`}>
                           {TYPE_LABELS.gap}

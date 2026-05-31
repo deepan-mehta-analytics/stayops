@@ -61,23 +61,23 @@ export default async function ReportsPage() {
       {/* Revenue by channel */}
       <div>
         <h2 className="text-lg font-semibold mb-3">Revenue by Channel</h2>
-        <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="rounded-lg border border-zinc-200 overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-800/50">
+            <thead className="bg-slate-100">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-zinc-500">Channel</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Bookings</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Nights</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Revenue</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Share</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">ADR</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Bookings</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Nights</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Revenue</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Share</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-zinc-100">
               {[...byChannel.entries()]
                 .sort((a, b) => b[1].revenue - a[1].revenue)
                 .map(([ch, data]) => (
-                <tr key={ch} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+                <tr key={ch} className="even:bg-slate-50 hover:bg-zinc-100">
                   <td className="px-4 py-3 font-medium capitalize">{ch}</td>
                   <td className="px-4 py-3 text-right">{data.bookings}</td>
                   <td className="px-4 py-3 text-right">{data.nights}</td>
@@ -98,23 +98,23 @@ export default async function ReportsPage() {
       {/* Revenue by property */}
       <div>
         <h2 className="text-lg font-semibold mb-3">Revenue by Property</h2>
-        <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="rounded-lg border border-zinc-200 overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-800/50">
+            <thead className="bg-slate-100">
               <tr>
-                <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Bookings</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Nights</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Revenue</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">Share</th>
-                <th className="px-4 py-3 text-right font-medium text-zinc-500">ADR</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Bookings</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Nights</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Revenue</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">Share</th>
+                <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-zinc-100">
               {[...byProperty.entries()]
                 .sort((a, b) => b[1].revenue - a[1].revenue)
                 .map(([prop, data]) => (
-                <tr key={prop} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+                <tr key={prop} className="even:bg-slate-50 hover:bg-zinc-100">
                   <td className="px-4 py-3 font-medium">{prop}</td>
                   <td className="px-4 py-3 text-right">{data.bookings}</td>
                   <td className="px-4 py-3 text-right">{data.nights}</td>

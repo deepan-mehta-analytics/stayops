@@ -19,7 +19,7 @@ export default function AppLayout({
       attribute="class"           // injects "dark" class on <html> for dark mode
       defaultTheme="light"        // ops console is always-light in Theme F
     >
-      <div className={`${poppins.variable} min-h-full bg-[#f8fafc] text-foreground font-[family-name:var(--font-poppins)]`}>
+      <div className={`${poppins.variable} min-h-full bg-background text-foreground font-[family-name:var(--font-poppins)]`}>
         <Nav />                                                  {/* persistent operator navigation bar */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}                                             {/* page content injected by Next.js router */}

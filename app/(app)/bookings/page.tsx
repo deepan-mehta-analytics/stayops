@@ -27,21 +27,21 @@ async function BookingsTable() {
     .limit(100);                                       // cap at 100 rows for demo performance
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+    <div className="rounded-lg border border-zinc-200 overflow-hidden">
       <table className="w-full text-sm">
-        <thead className="bg-zinc-50 dark:bg-zinc-800/50">
+        <thead className="bg-slate-100">
           <tr>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Property</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Guest</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Check-in</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Check-out</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Channel</th>
-            <th className="px-4 py-3 text-right font-medium text-zinc-500">Gross</th>
+            <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
+            <th className="px-4 py-3 text-left font-semibold text-zinc-700">Guest</th>
+            <th className="px-4 py-3 text-left font-semibold text-zinc-700">Check-in</th>
+            <th className="px-4 py-3 text-left font-semibold text-zinc-700">Check-out</th>
+            <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
+            <th className="px-4 py-3 text-right font-semibold text-zinc-700">Gross</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+        <tbody className="divide-y divide-zinc-100">
           {bookings.map((b) => (
-            <tr key={b.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+            <tr key={b.id} className="even:bg-slate-50 hover:bg-zinc-100">
               <td className="px-4 py-3 font-medium">{b.propertyName}</td>
               <td className="px-4 py-3">{b.guestName}</td>
               <td className="px-4 py-3">{b.checkIn}</td>
@@ -52,7 +52,7 @@ async function BookingsTable() {
           ))}
         </tbody>
       </table>
-      <div className="px-4 py-2 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400">
+      <div className="px-4 py-2 bg-slate-100 border-t border-zinc-200 text-xs text-zinc-400">
         Showing {bookings.length} most recent confirmed bookings
       </div>
     </div>
