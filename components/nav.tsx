@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";         // detect active route
 import { useTheme } from "next-themes";               // read and set current theme
 import { Moon, Sun } from "lucide-react";             // toggle icons
 import { Button } from "@/components/ui/button";      // shadcn button for consistent styling
+import { SignOutButton } from "@/components/auth/sign-out-button"; // sign-out icon button
 
 // ── Nav link definitions ───────────────────────────────────
 const links = [
@@ -60,6 +61,9 @@ export function Nav() {
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />   {/* visible in light mode */}
           <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" /> {/* visible in dark mode */}
         </Button>
+
+        {/* sign-out icon — clears session and redirects to landing page */}
+        <SignOutButton />
 
       </div>
     </nav>
