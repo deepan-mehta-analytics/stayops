@@ -20,19 +20,19 @@ export function MarketingNav() {
       <div className="hidden md:flex items-center gap-8">
         <button
           onClick={() => scrollTo("features")}
-          className="text-slate-300 hover:text-white text-sm transition-colors duration-150 cursor-pointer"
+          className="text-slate-300 hover:text-white text-base transition-colors duration-150 cursor-pointer"
         >
           Features
         </button>
         <button
           onClick={() => scrollTo("how-it-works")}
-          className="text-slate-300 hover:text-white text-sm transition-colors duration-150 cursor-pointer"
+          className="text-slate-300 hover:text-white text-base transition-colors duration-150 cursor-pointer"
         >
           How it works
         </button>
         <Link
           href="/dashboard"
-          className="text-slate-300 hover:text-white text-sm transition-colors duration-150" // same visual weight as scroll links
+          className="text-slate-300 hover:text-white text-base transition-colors duration-150"
         >
           Dashboard
         </Link>
