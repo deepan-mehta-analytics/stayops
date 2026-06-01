@@ -42,6 +42,9 @@ docs/superpowers/
 PROJECT-STATUS.md
 StayOps_PROJECT-PLAN.md
 
+# NotebookLM PKB sources — local study materials, not for version control
+notebooklm/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
