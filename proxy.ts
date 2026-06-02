@@ -42,7 +42,20 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;                                        // current request path
 
-  // ── Auth guard temporarily disabled for screenshot capture — restore after commit ──
+  // ── Guard: unauthenticated user → redirect to /login with next param ─────
+  const isProtected = PROTECTED_PREFIXES.some((prefix) =>
+    pathname.startsWith(prefix)                                                // prefix-match all (app) routes
+  );
+  if (isProtected && !user) {
+    const loginUrl = new URL("/login", request.url);                           // build absolute login URL
+    loginUrl.searchParams.set("next", pathname);                               // preserve intended destination
+    return NextResponse.redirect(loginUrl);                                    // redirect unauthenticated request
+  }
+
+  // ── Convenience: authenticated user hitting /login → go to dashboard ──────
+  if (pathname === "/login" && user) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));          // skip login if already signed in
+  }
 
   return response;                                                             // pass through with refreshed session cookie
 }
