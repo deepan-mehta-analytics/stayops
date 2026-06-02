@@ -50,8 +50,8 @@ export function Nav() {
         {/* spacer pushes right-side actions to the edge */}
         <div className="ml-auto" />
 
-        {/* sign-out icon — ring makes it discoverable; scale + mint glow on hover */}
-        <SignOutButton className="text-white/60 ring-1 ring-white/20 rounded-full hover:text-[#00e5a0] hover:ring-[#00e5a0]/60 hover:bg-[rgba(0,229,160,0.08)] hover:scale-110 hover:[filter:drop-shadow(0_0_10px_rgba(0,229,160,0.65))] transition-all duration-200" />
+        {/* sign-out icon — mint by default matching nav links; turns red on hover */}
+        <SignOutButton className="text-[#00e5a0] ring-1 ring-[#00e5a0]/40 rounded-full hover:text-red-500 hover:ring-red-500/60 hover:bg-red-500/10 hover:scale-110 transition-all duration-200" />
 
       </div>
     </nav>
