@@ -1,5 +1,7 @@
 "use client";                                                    // required: onClick uses document.getElementById (browser-only API)
 
+import Image from "next/image";                                  // Next.js optimised image — avoids ESLint no-img-element warning
+
 // ── Hero section — dark gradient mesh + headline + CTAs ──
 interface HeroProps {
   utmSource?:   string;   // passed from searchParams server-side
@@ -55,10 +57,12 @@ export function Hero({ utmSource, utmMedium, utmCampaign }: HeroProps) {
             <span className="ml-3 text-slate-500 text-xs font-mono truncate">stayops-five.vercel.app/reconciliation</span>
           </div>
           {/* Reconciliation dashboard screenshot captured at 1280×800 from live Vercel deploy */}
-          <img
+          <Image
             src="/screenshots/reconciliation.png"
             alt="StayOps reconciliation dashboard — conflict flags with AI analysis panel"
-            className="w-full object-cover"
+            width={1280}                                          // native capture width
+            height={800}                                         // native capture height
+            className="w-full h-auto"
           />
         </div>
 
