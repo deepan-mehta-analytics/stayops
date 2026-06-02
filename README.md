@@ -4,13 +4,13 @@
 
 Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-### What's live now — v3.0.0
+### What's live now — v4.0.0
 
 - 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
 - 📊 **Live KPI dashboard** — occupancy %, ADR, gross revenue, and upcoming turnovers computed from real Postgres rows via `force-dynamic` server components
 - 🗂️ **SQL reports page** — revenue by channel and property, ADR breakdown, and booking share %
-- 🎨 **Unified visual identity** — Theme F ops console: navy `#0f172a` nav, mint `#00e5a0` accent, Poppins typography, always-light `#f1f5f9` content area matching the marketing landing page brand
+- 🎨 **Unified visual identity** — Theme F ops console: navy `#0f172a` nav, mint `#00e5a0` accent, Poppins typography, warm alabaster `#F4F3EF` content area with white table cards and charcoal text
 - 🤖 **AI reconciliation agent** — Claude tool-calling reads flagged conflicts, streams reasoning token-by-token, and proposes a resolution with a 0–100 confidence score; operator accepts or dismisses with 👍/👎 feedback
 - ⏰ **Vercel Cron automation** — nightly turnover task generation + weekly AI-generated ops report with optional Slack delivery
 - 🌐 **Public landing page** — full-width AI-generated property banner, hero section, animated metrics strip, 6-feature grid, PostHog funnel tracking, and lead capture form with UTM attribution into the `leads` table
@@ -250,7 +250,7 @@ stayops/
 │   │   ├── layout.tsx            ← Marketing layout — Poppins font, OG metadata
 │   │   └── page.tsx              ← Landing page — banner + hero + sections + lead form
 │   ├── (app)/                    ← Route group — ops console (Theme F: always-light, navy/mint nav)
-│   │   ├── layout.tsx            ← App layout — ThemeProvider (always-light) + Poppins + Nav wrapper
+│   │   ├── layout.tsx            ← App layout — Poppins + Nav wrapper (always-light via CSS vars; no ThemeProvider)
 │   │   ├── dashboard/page.tsx    ← KPI dashboard — occupancy · ADR · revenue · conflicts
 │   │   ├── bookings/
 │   │   │   ├── page.tsx          ← Bookings list — all confirmed bookings across channels
