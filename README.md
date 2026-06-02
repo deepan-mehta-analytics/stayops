@@ -157,7 +157,7 @@ Operators spend Sunday evenings firefighting instead of growing their portfolio.
                          └─────────────────┘
 ```
 
-### Mermaid — Component Graph
+### Component Graph
 
 ```mermaid
 flowchart TB
