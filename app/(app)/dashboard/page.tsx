@@ -12,7 +12,7 @@ import Link from "next/link";                         // client-side navigation
 // ── KPI stat card component — mint top accent border ──────
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-zinc-200 border-t-2 [border-top-color:#00e5a0] bg-white p-6">
+    <div className="rounded-lg border border-zinc-200 border-t-2 [border-top-color:#00e5a0] bg-white shadow-sm p-6">
       <p className="text-sm font-medium text-zinc-500">{label}</p>
       <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
       {sub && <p className="mt-1 text-xs text-zinc-400">{sub}</p>}
@@ -80,9 +80,9 @@ export default async function DashboardPage() {
         {byProperty.length === 0 ? (
           <p className="text-sm text-zinc-400">No confirmed bookings in the last 30 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-slate-100">
+              <thead className="bg-slate-200">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
                   <th className="px-4 py-3 text-right font-semibold text-zinc-700">Revenue</th>
@@ -90,9 +90,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {byProperty.map((row) => (
-                  <tr key={row.name} className="even:bg-slate-50 hover:bg-zinc-100">
+              <tbody className="divide-y divide-slate-200">
+                {byProperty.map((row, i) => (
+                  <tr key={row.name} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
                     <td className="px-4 py-3 font-medium">{row.name}</td>
                     <td className="px-4 py-3 text-right">${row.revenue.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">{row.nights}</td>
@@ -111,9 +111,9 @@ export default async function DashboardPage() {
         {turnovers.length === 0 ? (
           <p className="text-sm text-zinc-400">No check-outs in the next 7 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-slate-100">
+              <thead className="bg-slate-200">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Guest</th>
@@ -121,9 +121,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {turnovers.map((t) => (
-                  <tr key={t.id} className="even:bg-slate-50 hover:bg-zinc-100">
+              <tbody className="divide-y divide-slate-200">
+                {turnovers.map((t, i) => (
+                  <tr key={t.id} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
                     <td className="px-4 py-3 font-medium">{t.propertyName}</td>
                     <td className="px-4 py-3">{t.guestName}</td>
                     <td className="px-4 py-3">{t.checkOut}</td>
