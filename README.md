@@ -224,7 +224,7 @@ flowchart TB
 | AI-generated property banner (Gemini triptych) | Growth | ✅ Done |
 | Admin authentication + protected ops console | Security | ✅ Done |
 | Dashboard Theme F — navy/mint/Poppins, always-light ops console | UI | ✅ Done |
-| Playwright E2E test suite | Testing | 🔄 Phase 4 |
+| Playwright E2E test suite | Testing | 🔜 v4.1.0 |
 
 ### Built With AI (Claude Code)
 
@@ -449,7 +449,7 @@ The app is deployed and publicly accessible at:
 
 ## 🧪 Tests
 
-### Current Coverage — Phase 1 + Phase 2
+### Current Coverage — Phase 1 + Phase 2 + Phase 3
 
 | Check | Tool | Runs on |
 |---|---|---|
@@ -496,7 +496,7 @@ Phase 3 — `lib/leads-api.test.ts`, 4 fixtures:
 
 ### Roadmap — Integration and E2E Tests
 
-API route handler integration tests and Playwright end-to-end tests are planned for Phase 4 portfolio polish.
+API route handler integration tests and Playwright end-to-end tests are planned for v4.1.0.
 
 ---
 
@@ -602,6 +602,12 @@ timeline
         v3.0.0 : Direct-booking landing page ✅
                : PostHog funnel analytics ✅
                : Lead capture + UTM attribution ✅
+    section Phase 4 · Portfolio Polish
+        v4.0.0 : Multi-user authentication ✅
+               : Warm alabaster ops console theme ✅
+               : 5-page screenshot suite (1280×800) ✅
+               : Hero card live screenshot ✅
+               : RLS on all 7 Postgres tables ✅
 ```
 
 ### Version Checklist
@@ -615,6 +621,7 @@ timeline
 | `v1.2.0` | Conflicts/Opportunities UI split + dollar estimates + Vitest suite (8 tests at ship, CI) | ✅ [Released 2026-05-30](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v1.2.0) |
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v2.0.0) |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v3.0.0) |
+| `v4.0.0` | Portfolio polish — auth, warm alabaster theme, 5 screenshots, RLS | ✅ [Released 2026-06-02](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v4.0.0) |
 
 ---
 
