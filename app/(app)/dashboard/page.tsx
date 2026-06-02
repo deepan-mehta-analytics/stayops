@@ -80,9 +80,9 @@ export default async function DashboardPage() {
         {byProperty.length === 0 ? (
           <p className="text-sm text-zinc-400">No confirmed bookings in the last 30 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 bg-white table-card overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-slate-200">
+              <thead className="bg-[#E9ECEF]">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
                   <th className="px-4 py-3 text-right font-semibold text-zinc-700">Revenue</th>
@@ -90,9 +90,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
-                {byProperty.map((row, i) => (
-                  <tr key={row.name} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
+              <tbody className="divide-y divide-[#E2E8F0]">
+                {byProperty.map((row) => (
+                  <tr key={row.name} className="bg-white hover:bg-stone-50 transition-colors">
                     <td className="px-4 py-3 font-medium">{row.name}</td>
                     <td className="px-4 py-3 text-right">${row.revenue.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">{row.nights}</td>
@@ -111,9 +111,9 @@ export default async function DashboardPage() {
         {turnovers.length === 0 ? (
           <p className="text-sm text-zinc-400">No check-outs in the next 7 days.</p>
         ) : (
-          <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-lg border border-zinc-200 bg-white table-card overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-slate-200">
+              <thead className="bg-[#E9ECEF]">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Guest</th>
@@ -121,9 +121,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
-                {turnovers.map((t, i) => (
-                  <tr key={t.id} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
+              <tbody className="divide-y divide-[#E2E8F0]">
+                {turnovers.map((t) => (
+                  <tr key={t.id} className="bg-white hover:bg-stone-50 transition-colors">
                     <td className="px-4 py-3 font-medium">{t.propertyName}</td>
                     <td className="px-4 py-3">{t.guestName}</td>
                     <td className="px-4 py-3">{t.checkOut}</td>

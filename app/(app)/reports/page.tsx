@@ -61,9 +61,9 @@ export default async function ReportsPage() {
       {/* Revenue by channel */}
       <div>
         <h2 className="text-lg font-semibold mb-3">Revenue by Channel</h2>
-        <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-zinc-200 bg-white table-card overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-slate-200">
+            <thead className="bg-[#E9ECEF]">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-zinc-700">Channel</th>
                 <th className="px-4 py-3 text-right font-semibold text-zinc-700">Bookings</th>
@@ -73,11 +73,11 @@ export default async function ReportsPage() {
                 <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {[...byChannel.entries()]
                 .sort((a, b) => b[1].revenue - a[1].revenue)
-                .map(([ch, data], i) => (
-                <tr key={ch} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
+                .map(([ch, data]) => (
+                <tr key={ch} className="bg-white hover:bg-stone-50 transition-colors">
                   <td className="px-4 py-3 font-medium capitalize">{ch}</td>
                   <td className="px-4 py-3 text-right">{data.bookings}</td>
                   <td className="px-4 py-3 text-right">{data.nights}</td>
@@ -98,9 +98,9 @@ export default async function ReportsPage() {
       {/* Revenue by property */}
       <div>
         <h2 className="text-lg font-semibold mb-3">Revenue by Property</h2>
-        <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-lg border border-zinc-200 bg-white table-card overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-slate-200">
+            <thead className="bg-[#E9ECEF]">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
                 <th className="px-4 py-3 text-right font-semibold text-zinc-700">Bookings</th>
@@ -110,11 +110,11 @@ export default async function ReportsPage() {
                 <th className="px-4 py-3 text-right font-semibold text-zinc-700">ADR</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-[#E2E8F0]">
               {[...byProperty.entries()]
                 .sort((a, b) => b[1].revenue - a[1].revenue)
-                .map(([prop, data], i) => (
-                <tr key={prop} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
+                .map(([prop, data]) => (
+                <tr key={prop} className="bg-white hover:bg-stone-50 transition-colors">
                   <td className="px-4 py-3 font-medium">{prop}</td>
                   <td className="px-4 py-3 text-right">{data.bookings}</td>
                   <td className="px-4 py-3 text-right">{data.nights}</td>

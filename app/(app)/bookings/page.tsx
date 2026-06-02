@@ -27,9 +27,9 @@ async function BookingsTable() {
     .limit(100);                                       // cap at 100 rows for demo performance
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-lg border border-zinc-200 bg-white table-card overflow-hidden">
       <table className="w-full text-sm">
-        <thead className="bg-slate-200">
+        <thead className="bg-[#E9ECEF]">
           <tr>
             <th className="px-4 py-3 text-left font-semibold text-zinc-700">Property</th>
             <th className="px-4 py-3 text-left font-semibold text-zinc-700">Guest</th>
@@ -39,9 +39,9 @@ async function BookingsTable() {
             <th className="px-4 py-3 text-right font-semibold text-zinc-700">Gross</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200">
-          {bookings.map((b, i) => (
-            <tr key={b.id} className={`${i % 2 === 1 ? 'bg-slate-100' : 'bg-white'} hover:bg-slate-200 transition-colors`}>
+        <tbody className="divide-y divide-[#E2E8F0]">
+          {bookings.map((b) => (
+            <tr key={b.id} className="bg-white hover:bg-stone-50 transition-colors">
               <td className="px-4 py-3 font-medium">{b.propertyName}</td>
               <td className="px-4 py-3">{b.guestName}</td>
               <td className="px-4 py-3">{b.checkIn}</td>
@@ -52,7 +52,7 @@ async function BookingsTable() {
           ))}
         </tbody>
       </table>
-      <div className="px-4 py-2 bg-slate-200 border-t border-slate-200 text-xs text-zinc-500">
+      <div className="px-4 py-2 bg-[#E9ECEF] border-t border-[#E2E8F0] text-xs text-zinc-500">
         Showing {bookings.length} most recent confirmed bookings
       </div>
     </div>

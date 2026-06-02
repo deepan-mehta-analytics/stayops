@@ -48,10 +48,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── Vega / Green / Blue — preset b3ZMmbVHcm — Theme F: mint primary, #f8fafc bg ── */
+/* ── Theme F: mint primary, warm alabaster bg — premium hospitality palette ── */
 :root {
-  --background: oklch(0.963 0.014 213);              /* ≈ #f0f6fa — cool blue-grey page wash */
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.963 0.006 75);               /* ≈ #F4F3EF — warm alabaster, reduces eye strain */
+  --foreground: oklch(0.146 0.004 265);              /* ≈ #212529 — deep charcoal, softer than pure black */
   --card: oklch(1 0 0);                              /* pure white cards pop off #f8fafc bg */
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -128,6 +128,11 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ── Table card — subtle blurry drop shadow separates white container from warm page bg ── */
+.table-card {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
 }
 
 /* ── Marketing page animations ──────────────────────────── */
