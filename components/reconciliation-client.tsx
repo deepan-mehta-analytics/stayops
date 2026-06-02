@@ -79,9 +79,9 @@ export default function ReconciliationClient({
               <p className="text-green-700 text-sm">No conflicts — all bookings reconcile cleanly.</p>
             </div>
           ) : (
-            <div className="rounded-lg border border-zinc-200 overflow-hidden">
+            <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-slate-100">
+                <thead className="bg-slate-200">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-700">Type</th>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-700">Reason</th>
@@ -90,8 +90,8 @@ export default function ReconciliationClient({
                     <th className="px-4 py-3 text-left font-semibold text-violet-600">AI</th>  {/* analyze column */}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100">
-                  {conflicts.map((flag) => {
+                <tbody className="divide-y divide-slate-200">
+                  {conflicts.map((flag, i) => {
                     const isSelected = selectedFlag?.id === flag.id;    // highlight selected row
                     return (
                       <tr
@@ -100,7 +100,7 @@ export default function ReconciliationClient({
                         className={`cursor-pointer transition-colors ${
                           isSelected
                             ? "bg-violet-50"                            // violet tint when selected
-                            : "even:bg-slate-50 hover:bg-zinc-100"      // alternating band + hover
+                            : `${i % 2 === 1 ? "bg-slate-100" : "bg-white"} hover:bg-slate-200`
                         }`}
                       >
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -150,9 +150,9 @@ export default function ReconciliationClient({
           {opportunities.length === 0 ? (
             <p className="text-sm text-zinc-400">No open revenue windows right now.</p>
           ) : (
-            <div className="rounded-lg border border-zinc-200 overflow-hidden">
+            <div className="rounded-lg border border-zinc-200 bg-white shadow-sm overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-slate-100">
+                <thead className="bg-slate-200">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-700">Window</th>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-700">Detail</th>
@@ -160,9 +160,9 @@ export default function ReconciliationClient({
                     <th className="px-4 py-3 text-left font-semibold text-zinc-700">Detected</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100">
-                  {opportunities.map((flag) => (
-                    <tr key={flag.id} className="even:bg-slate-50 hover:bg-zinc-100">
+                <tbody className="divide-y divide-slate-200">
+                  {opportunities.map((flag, i) => (
+                    <tr key={flag.id} className={`${i % 2 === 1 ? "bg-slate-100" : "bg-white"} hover:bg-slate-200 transition-colors`}>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_STYLES.gap}`}>
                           {TYPE_LABELS.gap}
