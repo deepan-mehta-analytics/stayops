@@ -19,7 +19,7 @@ Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and 
 
 | Phase | Version | Features |
 |---|---|---|
-| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme · Playwright E2E · README screenshots |
+| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme ✅ · README screenshots ✅ · Auth hardening ✅ · Playwright E2E (planned) |
 
 Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and AI agent layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
@@ -66,12 +66,12 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 
 - **Direct-booking growth surface** — public landing page with AI-generated property banner, PostHog funnel tracking (pageview → enquiry → lead capture → `leads` table with full UTM attribution), 6 review cards with modal, animated metrics strip, and lead capture form
 
-**Partially implemented (Phase 4 — in progress):**
+**Implemented (Phase 4 — v4.0.0):**
 
 - **Multi-user authentication** ✅ — Supabase Auth (email/password); `/login` page with full-width property banner, inline forgot-password toggle, PKCE reset-password flow; `proxy.ts` middleware guards all `/dashboard`, `/bookings`, `/reconciliation`, `/reports` routes; sign-out button in the ops console nav
-- **Dashboard theme alignment** — ops console visual identity matched to landing page brand
-- **Playwright E2E** — full end-to-end test suite against live Vercel deployment
-- **README screenshots** — auto-captured from live pages
+- **Dashboard theme alignment** ✅ — warm alabaster (`#F4F3EF`) page bg, white table cards, `#E9ECEF` headers, charcoal text, soft drop shadow, subtle `#E2E8F0` row borders; mint logout button with red hover
+- **README screenshots** ✅ — five pages captured at 1280×800 from live Vercel deploy; hero card updated with real reconciliation screenshot
+- **Playwright E2E** — full end-to-end test suite against live Vercel deployment (planned)
 
 ---
 
@@ -312,7 +312,13 @@ stayops/
 │       └── browser.ts            ← createBrowserClient() wrapper — Client Components + event handlers
 │
 ├── public/                       ← Static assets
-│   └── banner-properties.png     ← AI-generated STR triptych (Gemini — beach/mountain/city)
+│   ├── banner-properties.png     ← AI-generated STR triptych (Gemini — beach/mountain/city)
+│   └── screenshots/              ← Phase 4 portfolio screenshots (1280×800, live Vercel)
+│       ├── landing-hero.png      ← Landing page above-the-fold
+│       ├── dashboard.png         ← KPI dashboard (used in README)
+│       ├── reconciliation.png    ← Conflict flags + AI panel (used in README + hero card)
+│       ├── bookings.png          ← Bookings list
+│       └── reports.png           ← Revenue reports
 │
 ├── instrumentation-client.ts     ← PostHog init (client-side, marketing pages only)
 │
@@ -495,6 +501,18 @@ API route handler integration tests and Playwright end-to-end tests are planned 
 ---
 
 ## 📊 Results / Performance
+
+### Dashboard Screenshots (Phase 4 — captured at 1280×800 from live Vercel deploy)
+
+![StayOps landing page hero — dark gradient with reconciliation screenshot card](public/screenshots/landing-hero.png)
+
+![StayOps KPI dashboard — occupancy, ADR, gross revenue, upcoming turnovers](public/screenshots/dashboard.png)
+
+![StayOps reconciliation page — conflict flags with AI analysis panel open](public/screenshots/reconciliation.png)
+
+> Full app screenshots (all pages) available in [`public/screenshots/`](./public/screenshots/)
+
+---
 
 ### Seed Data (Supabase + demo dataset)
 

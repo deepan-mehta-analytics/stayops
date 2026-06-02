@@ -54,10 +54,12 @@ export function Hero({ utmSource, utmMedium, utmCampaign }: HeroProps) {
             <span className="w-3 h-3 rounded-full bg-green-500/70" />  {/* expand dot */}
             <span className="ml-3 text-slate-500 text-xs font-mono truncate">stayops-five.vercel.app/reconciliation</span>
           </div>
-          {/* Screenshot placeholder — replaced with real screenshot in Phase 4 */}
-          <div className="aspect-[16/9] bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-            <p className="text-slate-500 text-sm font-mono">[ reconciliation dashboard screenshot ]</p>
-          </div>
+          {/* Reconciliation dashboard screenshot captured at 1280×800 from live Vercel deploy */}
+          <img
+            src="/screenshots/reconciliation.png"
+            alt="StayOps reconciliation dashboard — conflict flags with AI analysis panel"
+            className="w-full object-cover"
+          />
         </div>
 
         {/* CTA row */}
