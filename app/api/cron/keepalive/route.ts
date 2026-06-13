@@ -4,6 +4,10 @@
 import { createDb } from "@/db/index";                  // Drizzle DB factory (postgres.js + SSL)
 import { sql }      from "drizzle-orm";                 // raw SQL template tag
 
+export async function GET() {
+  return new Response("OK");                            // health check for URL validators
+}
+
 export async function POST(req: Request) {
   const secret = process.env.CRON_SECRET;               // expected secret from env
   if (req.headers.get("authorization") !== `Bearer ${secret}`) { // verify caller signature
