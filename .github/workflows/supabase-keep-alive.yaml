@@ -1,0 +1,16 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    - cron: '0 0 */3 * *'
+
+jobs:
+  ping_supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: External ping to Supabase
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            "https://unxvjlpvplhpdynmakmx.supabase.co/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
