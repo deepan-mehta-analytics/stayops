@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: External ping to Supabase
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            "https://unxvjlpvplhpdynmakmx.supabase.co/rest/v1/" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
+          curl -sf -o /dev/null -w "%{http_code}" \
+            "https://unxvjlpvplhpdynmakmx.supabase.co/rest/v1/bookings?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
