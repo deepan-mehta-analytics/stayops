@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/generate-turnovers",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/keepalive",
+      "schedule": "0 12 * * *"
     }
   ]
 }

@@ -1,10 +1,12 @@
 // ── Weekly report cron route ──────────────────────────────
 // Triggered by Vercel Cron every Monday at 08:00 UTC.
+// Vercel Cron always calls via GET, not POST — this previously only
+// exported POST, so every scheduled invocation 405'd silently.
 import { createDb } from "@/db/index";                                   // DB factory
 import * as schema from "@/db/schema";                                   // table definitions
 import { buildWeeklyReport, getCurrentIsoWeek } from "@/lib/weekly-report"; // report builder + week helper
 
-export async function POST(req: Request) {
+async function run(req: Request) {
   const secret = process.env.CRON_SECRET;                               // expected secret from env
   if (req.headers.get("authorization") !== `Bearer ${secret}`) {       // verify Vercel cron signature
     return new Response("Unauthorized", { status: 401 });               // reject if wrong/missing
@@ -30,4 +32,12 @@ export async function POST(req: Request) {
   }
 
   return new Response("OK");                                            // success
+}
+
+export async function GET(req: Request) {
+  return run(req);                                                      // what Vercel Cron actually calls
+}
+
+export async function POST(req: Request) {
+  return run(req);                                                      // kept for manual/API-based triggers
 }

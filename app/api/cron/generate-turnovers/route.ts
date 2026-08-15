@@ -1,11 +1,13 @@
 // ── Turnover task generation cron route ───────────────────
 // Triggered by Vercel Cron every day at midnight UTC.
+// Vercel Cron always calls via GET, not POST — this previously only
+// exported POST, so every scheduled invocation 405'd silently.
 // Idempotent: only creates tasks for bookings that do not already have one.
 import { createDb } from "@/db/index";                                   // DB factory
 import * as schema from "@/db/schema";                                   // table definitions
 import { and, ne, gte, lte } from "drizzle-orm";                        // query helpers
 
-export async function POST(req: Request) {
+async function run(req: Request) {
   const secret = process.env.CRON_SECRET;                               // expected secret
   if (req.headers.get("authorization") !== `Bearer ${secret}`) {       // verify cron signature
     return new Response("Unauthorized", { status: 401 });               // reject if wrong/missing
@@ -52,4 +54,12 @@ export async function POST(req: Request) {
     created: toInsert.length,                                           // how many tasks were created
     skipped: upcoming.length - toInsert.length,                         // how many were already there
   });
+}
+
+export async function GET(req: Request) {
+  return run(req);                                                      // what Vercel Cron actually calls
+}
+
+export async function POST(req: Request) {
+  return run(req);                                                      // kept for manual/API-based triggers
 }
