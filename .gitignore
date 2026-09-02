@@ -45,6 +45,11 @@ StayOps_PROJECT-PLAN.md
 # NotebookLM PKB sources — local study materials, not for version control
 notebooklm/
 
+# agent-workflow files — local-only, never tracked (any repo, any content)
+/CLAUDE.md
+/workflow_status.md
+/workflow_status_archive.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

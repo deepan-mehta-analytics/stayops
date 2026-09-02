@@ -657,3 +657,9 @@ StayOps uses a **synthetically generated demo dataset** — there is no external
 
 🔗 GitHub: [deepan-mehta-analytics](https://github.com/deepan-mehta-analytics)
 🌐 Live: [stayops-five.vercel.app](https://stayops-five.vercel.app)
+
+---
+
+## 📄 License
+
+Licensed under the [MIT License](LICENSE).
