@@ -57,7 +57,7 @@ export default async function LandingPage({
         {/* Footer */}
         <footer className="bg-slate-950 text-slate-500 py-8 px-6">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <span>StayOps · BUSL 1.1 © 2026 Deepan Mehta</span>
+            <span>StayOps · MIT License © 2026 Deepan Mehta</span>
             <div className="flex items-center gap-4">
               <a
                 href="https://github.com/deepan-mehta-analytics/stayops"

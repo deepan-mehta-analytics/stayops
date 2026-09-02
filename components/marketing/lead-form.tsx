@@ -273,10 +273,9 @@ export function LeadForm({ utmSource, utmMedium, utmCampaign }: LeadFormProps) {
 
         {/* Privacy / license note */}
         <p className="text-center text-xs text-slate-400">
-          BUSL 1.1 licensed · Source visible on{" "}
+          MIT licensed · Source visible on{" "}
           <a href="https://github.com/deepan-mehta-analytics/stayops" target="_blank" rel="noopener noreferrer"
              className="underline hover:text-slate-600">GitHub</a>
-          {" "}· Non-commercial evaluation permitted
         </p>
 
       </form>
