@@ -2,7 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    # Every 4 hours (UTC); one ping a day fell below Supabase's "a few requests each day" activity bar.
+    - cron: '0 */4 * * *'
 
 jobs:
   ping_supabase:
