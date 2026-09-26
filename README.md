@@ -324,7 +324,8 @@ stayops/
 │
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                ← GitHub Actions: lint + typecheck + unit tests on every push (Node 24)
+│       ├── ci.yml                ← GitHub Actions: lint + typecheck + unit tests on every push (Node 24)
+│       └── supabase-keep-alive.yaml ← Scheduled ping every 4 hours so the free-tier Supabase project isn't paused
 │
 ├── .env.local.example            ← All required env vars documented with comments
 ├── vercel.json                   ← Cron schedules: weekly-report (Mon 08:00 UTC) + turnovers (daily midnight)
