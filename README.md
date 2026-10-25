@@ -90,7 +90,7 @@ It models the real-world operator workflow of importing bookings from Airbnb, Bo
 | Analytics | PostHog | Funnel events, session capture, conversion tracking (Phase 3) |
 | Sheets Integration | Google Sheets API (service account) | Booking import/export — a real operator workflow |
 | Automation | Vercel Cron | Scheduled reconciliation runs and weekly AI report delivery |
-| CI | GitHub Actions (Node 24) | Lint + typecheck on every push to `main` |
+| CI | GitHub Actions (Node 24) | Lint + typecheck + unit tests on every push to `main` |
 | Seed | `tsx` + `crypto` | Deterministic, idempotent demo data generation |
 
 ---
