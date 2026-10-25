@@ -4,7 +4,7 @@
 
 Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and direct channels — reconciled manually in spreadsheets. **StayOps** replaces that workflow with a unified AI-assisted operations console, live on Vercel.
 
-### What's live now — v4.0.0
+### What's live now — v4.0.1
 
 - 📥 **Multi-channel ingestion** — CSV upload and Google Sheets API import; all rows deduplicated via SHA-256 `source_row_hash` so re-importing is always idempotent
 - ⚙️ **Rule-based reconciliation engine** — detects four conflict types: duplicate bookings, double-bookings, pricing anomalies (>25% deviation from base rate), and upsell gap nights; writes structured flags with plain-English reasons
@@ -609,6 +609,7 @@ timeline
                : 5-page screenshot suite (1280×800) ✅
                : Hero card live screenshot ✅
                : RLS on all 7 Postgres tables ✅
+        v4.0.1 : Next.js 16.4.3 security patch ✅
 ```
 
 ### Version Checklist
@@ -623,6 +624,7 @@ timeline
 | `v2.0.0` | AI agent layer — Claude tool-calling + Slack reports + turnover cron | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v2.0.0) |
 | `v3.0.0` | Growth surface — landing page + PostHog funnel + lead capture | ✅ [Released 2026-05-31](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v3.0.0) |
 | `v4.0.0` | Portfolio polish — auth, warm alabaster theme, 5 screenshots, RLS | ✅ [Released 2026-06-02](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v4.0.0) |
+| `v4.0.1` | Security patch — Next.js 16.4.3 (critical RCE advisories), transitive dependency fixes | ✅ [Released 2026-10-25](https://github.com/deepan-mehta-analytics/stayops/releases/tag/v4.0.1) |
 
 ---
 
