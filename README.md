@@ -19,7 +19,8 @@ Short/mid-term rental operators manage bookings across Airbnb, Booking.com, and 
 
 | Phase | Version | Features |
 |---|---|---|
-| **Phase 4 — Portfolio Polish** | `v4.0.0` | Dashboard theme ✅ · README screenshots ✅ · Auth hardening ✅ · Playwright E2E (planned) |
+| **Phase 4 — Portfolio Polish** | `v4.0.0` → `v4.0.1` | Dashboard theme ✅ · README screenshots ✅ · Auth hardening ✅ · Next.js 16.4.3 security patch ✅ (v4.0.1) |
+| **Next — E2E Testing** | `v4.1.0` | Playwright E2E suite against the live Vercel deployment (planned) |
 
 Built end-to-end with **Claude Code as the primary coding agent**. The reconciliation engine and AI agent layer are powered by Anthropic's Claude SDK with tool-calling. Every commit traces to a Claude Code session — demonstrating the AI-assisted internal tooling pattern central to modern rental-tech operator and data engineering roles.
 
