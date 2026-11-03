@@ -12,7 +12,7 @@ env:
 jobs:
   lint-and-typecheck:
     name: Lint & Typecheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04        # pinned: last CI run passed on 26.04; never ubuntu-latest (guard job)
 
     steps:
       - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
 
   test:
     name: Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04        # pinned: last CI run passed on 26.04; never ubuntu-latest (guard job)
 
     steps:
       - name: Checkout code
@@ -52,3 +52,20 @@ jobs:
 
       - name: Run unit tests
         run: npm test
+
+  # ── Runner pin guard ────────────────────────────────────────────────────
+  # ubuntu-latest moved from 24.04 to 26.04 in Oct-Nov 2026 and broke an R
+  # build in another repo. Every job must name an exact image; this job fails
+  # if any workflow uses a moving "-latest" runner label.
+  runner-pin-guard:
+    name: Runner pin guard                                   # label shown in the Actions UI
+    runs-on: ubuntu-26.04        # pinned: last CI run passed on 26.04; never ubuntu-latest (guard job)
+    steps:
+      - uses: actions/checkout@v4                                     # check out the workflow files
+      - name: Fail on moving runner labels                   # the fail-safe check
+        run: |                                               # bash step
+          echo "::notice::Runner image $ImageOS $ImageVersion"   # record which image ran
+          if grep -rnE '^[^#]*(ubuntu|windows|macos)-latest' .github/workflows; then  # any -latest label outside a comment (runs-on or matrix)?
+            echo "::error::Pin runners to an exact image (e.g. ubuntu-24.04), never *-latest"   # explain the failure
+            exit 1                                           # fail the job
+          fi                                                 # end of check

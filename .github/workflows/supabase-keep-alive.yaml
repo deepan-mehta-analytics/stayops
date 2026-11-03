@@ -7,7 +7,7 @@ on:
 
 jobs:
   ping_supabase:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04        # pinned: last CI run passed on 26.04; never ubuntu-latest (guard job)
 
     steps:
       - name: External ping to Supabase
